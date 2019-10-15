@@ -1,0 +1,17 @@
+.SearchBox {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.inputElement {
+  position: absolute;
+  left: 0;
+  top: 10;
+}
+
+.search-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
