@@ -2,14 +2,18 @@ import {
   tracksReducer,
   searchQueryReducer
 } from "./Reducers/AllTracksReducers";
-import { queueTrackReducer } from "./Reducers/QueueReducer";
+import {
+  queueTrackReducer,
+  currentTrackReducer
+} from "./Reducers/QueueReducer";
 
 import { combineReducers, createStore } from "redux";
 
 const rootReducer = combineReducers({
   tracksReducer,
   searchQueryReducer,
-  queueTrackReducer
+  queueTrackReducer,
+  currentTrackReducer
 });
 
 const store = createStore(rootReducer);

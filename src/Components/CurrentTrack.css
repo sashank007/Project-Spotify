@@ -1,0 +1,19 @@
+.current-track {
+  width: 100vw;
+  height: 125px;
+  float: left;
+  display: block;
+  background: green;
+  overflow: auto;
+  position: absolute;
+  bottom: 0;
+}
+#track-image {
+  width: 80px;
+  height: 80px;
+  float: left;
+}
+
+#track-name {
+  margin: auto;
+}

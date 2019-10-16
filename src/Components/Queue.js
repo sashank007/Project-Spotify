@@ -1,6 +1,6 @@
 import React, { Component, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { queueTrack } from "../Actions/QueueActions";
+import { queueTrack, updateCurrentTrack } from "../Actions/QueueActions";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 import { playTrack } from "../Middleware/playbackMiddleware";
@@ -11,16 +11,26 @@ const Queue = () => {
 
   const [trackSequence, setTrackSequence] = useState([]);
   const [queueModified, setQueueModified] = useState(false);
+  let timerId = null;
 
   const playNextTrack = () => {
+    console.log("current timer : ", timerId);
     if (queue.length > 0) {
+      if (timerId) clearTimeout(timerId);
       //get device id
+      let payload = {
+        trackName: queue[0].name,
+        trackImage: queue[0].trackImage,
+        trackDuration: queue[0].duration
+      };
+      updateCurrentTrack(dispatch, payload);
+      //dispatch currentTrack
+
       const deviceId = "23ac1242e1b5a0cdf2e744c6ca242964bce8edad";
-      //play the song
-      //   for (let i = 0; i < queue.length; i++) {
-      //     setTrackSequence(trackSequence.push(queue[i].trackId));
-      //   }
       console.log("playing track...");
+      let duration = queue[0].duration;
+      console.log("track duration:", duration);
+      timerId = setTimeout(playNextTrack, duration);
       playTrack(queue[0].trackId, deviceId);
       queue.splice(0, 1);
       queueTrack(dispatch, queue);
@@ -68,7 +78,7 @@ const Queue = () => {
     <div>
       <h1>Queue</h1>
       <ul>{getAllQueueItems()}</ul>
-      <button onClick={playNextTrack}>Play</button>
+      <button onClick={playNextTrack}>Play Next</button>
     </div>
   );
 };
