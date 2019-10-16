@@ -15,3 +15,11 @@
   top: 0;
   left: 0;
 }
+ul {
+  list-style-type: none;
+  cursor: pointer;
+}
+
+li {
+  cursor: pointer;
+}

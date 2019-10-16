@@ -2,10 +2,12 @@ import React, { Component, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setTracks, searchQuery } from "../Actions/SearchActions";
 import { searchTracks } from "../Middleware/searchMiddleWare";
-
+import { queueTrack } from "../Actions/QueueActions";
+import Queue from "./Queue";
 const Search = () => {
-  const { tracks } = useSelector(state => ({
-    ...state.tracksReducer
+  const { tracks, queue } = useSelector(state => ({
+    ...state.tracksReducer,
+    ...state.queueTrackReducer
   }));
 
   const dispatch = useDispatch();
@@ -21,12 +23,21 @@ const Search = () => {
     });
   };
 
+  const queueTheTrack = e => {
+    console.log("queue the track:", e.target.id);
+    let trackName = e.target.innerHTML;
+    let id = e.target.id;
+    queue.push({ name: trackName, trackId: tracks[id].uri, score: 0 });
+    queueTrack(dispatch, queue);
+  };
   const getAllTracks = () => {
-    {
-      if (tracks) {
-        console.log("get al tracks :", tracks);
-        return tracks.map((keyName, i) => <li>{tracks[i].name}</li>);
-      }
+    if (tracks) {
+      console.log("get all tracks :", tracks);
+      return tracks.map((keyName, i) => (
+        <li key={i} id={i} onClick={queueTheTrack}>
+          {tracks[i].name}
+        </li>
+      ));
     }
   };
 
@@ -36,6 +47,7 @@ const Search = () => {
       <input className="SearchBox" ref={searchEl} onChange={onUpdateInput} />
       <div className="inputElement">{searchText}</div>
       <ul> {getAllTracks()}</ul>
+      <Queue />
     </div>
   );
 };
