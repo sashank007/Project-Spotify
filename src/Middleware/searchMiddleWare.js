@@ -1,7 +1,7 @@
 import fetch from "isomorphic-unfetch";
 
 import { setTracks } from "../Actions/SearchActions";
-import { OAUTH_TOKEN } from "../Config/Auth";
+import { OAUTH_TOKEN } from "../config/auth";
 import { useDispatch, useSelector } from "react-redux";
 // import { SEARCH_TRACKS } from "../constants/ActionTypes";
 // import { searchTracksSuccess } from "../actions/searchActions";

@@ -8,7 +8,7 @@ export default function CurrentTrack(props) {
   return (
     <div className="current-track">
       <h3 id="track-name">{trackName}</h3>
-      <img id="track-image" src={trackImage} alt="track"></img>
+      <img id="track-image" src={trackImage}></img>
     </div>
   );
 }

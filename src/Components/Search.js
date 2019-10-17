@@ -27,10 +27,7 @@ const Search = () => {
     // }
   });
 
-  // const onLoad = () =>
-  // {
-
-  // }
+  const onLoad = () => {};
 
   const onUpdateInput = () => {
     console.log("search element : ", searchEl.current.value);
