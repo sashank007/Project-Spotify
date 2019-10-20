@@ -1,5 +1,5 @@
 {
-  "name": "project-spotify",
+  "name": "project-spotfiy",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -45,7 +45,7 @@
   "scripts": {
     "dev": "concurrently --kill-others \"nodemon server/server.js\" \"react-scripts start\"",
     "start": "concurrently --kill-others \"nodemon server/server.js\" \"react-scripts start\"",
-    "build": "concurrently --kill-others \"nodemon server/server.js\" \"react-scripts build\"",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
