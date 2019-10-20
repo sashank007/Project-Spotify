@@ -1,4 +1,4 @@
-export const sendQueuePusher = queue => {
+export const sendQueuePusher = (queue, privateId) => {
   fetch("/queue", {
     method: "post",
     // mode: "no-cors",
@@ -6,7 +6,8 @@ export const sendQueuePusher = queue => {
       "content-type": "application/json"
     }),
     body: JSON.stringify({
-      queue: queue
+      queue: queue,
+      privateId: privateId
     })
   })
     .then(res => res.json())

@@ -15,3 +15,20 @@ export const sessionReducer = (
   }
   return state;
 };
+
+export const privateIdReducer = (
+  state = {
+    privateId: ""
+  },
+  { type, payload }
+) => {
+  switch (type) {
+    case ACTION_TYPES.SET_PRIVATE_ID: {
+      console.log("settign private id ...", payload);
+      return { ...state, privateId: payload };
+    }
+    default: {
+    }
+  }
+  return state;
+};

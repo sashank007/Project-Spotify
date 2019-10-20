@@ -18,7 +18,8 @@ var channels_client = new Pusher({
 router.post("/", (req, res) => {
   console.log(req.body);
   channels_client.trigger("queue-channel", "queue-item", {
-    queue: req.body.queue
+    queue: req.body.queue,
+    privateId: req.body.privateId
   });
   return res.json({ success: true, message: "Added item to queue" });
 });

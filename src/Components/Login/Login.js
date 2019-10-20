@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Button } from "@material-ui/core";
 import queryString from "query-string";
 import { setSessionToken } from "../../Actions/SessionActions";
-
+import "./Login.css";
 export default function Login() {
   const spotifyLogin = () => {
     window.location = "http://localhost:5000/login";
@@ -46,7 +46,7 @@ export default function Login() {
   }, []);
 
   return (
-    <div>
+    <div className="Login-Container">
       {accessToken === "" ? (
         <Button onClick={spotifyLogin}>Login</Button>
       ) : (

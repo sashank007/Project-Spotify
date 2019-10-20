@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-globals */
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import logo from "./logo.svg";
 import Search from "../src/Components/Search";
 import { Provider } from "react-redux";
@@ -10,6 +10,7 @@ import CurrentTrack from "./Components/CurrentTrack";
 import Login from "./Components/Login/Login";
 
 function App() {
+  const [privateId, setPrivateId] = useState();
   function getUniqueId() {
     return (
       "public-" +
@@ -19,8 +20,8 @@ function App() {
     );
   }
   useEffect(() => {
-    onLoad();
-    callBackendAPI();
+    // onLoad();
+    // callBackendAPI();
     // .then(res => console.log("response for login:", res));
   });
 
@@ -34,21 +35,13 @@ function App() {
       : decodeURIComponent(results[1].replace(/\+/g, " "));
   }
 
-  const callBackendAPI = () => {
-    // fetch("/login", { mode: "no-cors" });
-    // const body = await response.json();
-    // if (response.status !== 200) {
-    //   throw Error(body.message);
-    // }
-    // return body;
-  };
-
   const onLoad = () => {
     var id = getUrlParameter("id");
+    let uniqueId = getUniqueId();
+
     if (!id) {
-      location.search = location.search
-        ? "&id=" + getUniqueId()
-        : "id=" + getUniqueId();
+      setPrivateId(uniqueId);
+      location.search = location.search ? "&id=" + uniqueId : "id=" + uniqueId;
       return;
     }
   };
