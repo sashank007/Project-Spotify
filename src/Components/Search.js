@@ -7,11 +7,13 @@ import Queue from "./Queue";
 import AlignItemsList from "./ListItem";
 import TrackItem from "./ListItem";
 import CurrentTrack from "./CurrentTrack";
-
+import { sendQueuePusher } from "../Middleware/queueMiddleware";
+import Pusher from "pusher-js";
 const Search = () => {
-  const { tracks, queue } = useSelector(state => ({
+  const { tracks, queue, accessToken } = useSelector(state => ({
     ...state.tracksReducer,
-    ...state.queueTrackReducer
+    ...state.queueTrackReducer,
+    ...state.sessionReducer
   }));
 
   const dispatch = useDispatch();
@@ -19,21 +21,34 @@ const Search = () => {
   const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
+    onLoad();
     // if (process.browser) {
     //   const refreshToken = localStorage.getItem("refreshToken");
     //   const accessToken = localStorage.getItem("accessToken");
     //   const expiresIn = localStorage.getItem("expiresIn");
     //   console.log(refreshToken, accessToken, expiresIn);
     // }
-  });
+  }, []);
 
-  const onLoad = () => {};
+  const onLoad = () => {
+    var pusher = new Pusher("a3ef4965765d2b7fea88", {
+      cluster: "us3",
+      forceTLS: true
+    });
+    var channel = pusher.subscribe("queue-channel");
+    channel.bind("queue-item", function(data) {
+      console.log("data: ", data);
+      // sendQueuePusher(queue);
+      queueTrack(dispatch, data.queue);
+      // queueTrack(dispatch, data);
+    });
+  };
 
   const onUpdateInput = () => {
     console.log("search element : ", searchEl.current.value);
     setSearchText(searchEl.current.value);
     searchQuery(dispatch, searchText);
-    searchTracks(searchText).then(res => {
+    searchTracks(searchText, accessToken).then(res => {
       setTracks(dispatch, res);
     });
   };
@@ -49,6 +64,7 @@ const Search = () => {
       duration: tracks[id].duration_ms,
       trackImage: tracks[id].album.images[0].url
     });
+    sendQueuePusher(queue);
     queueTrack(dispatch, queue);
   };
 

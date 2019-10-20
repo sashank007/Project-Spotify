@@ -1,14 +1,12 @@
 import fetch from "isomorphic-unfetch";
-
 import { setTracks } from "../Actions/SearchActions";
-import { OAUTH_TOKEN } from "../config/auth";
 import { useDispatch, useSelector } from "react-redux";
 // import { SEARCH_TRACKS } from "../constants/ActionTypes";
 // import { searchTracksSuccess } from "../actions/searchActions";
 
 const SPOTIFY_API_BASE = "https://api.spotify.com/v1";
 
-export const searchTracks = query => {
+export const searchTracks = (query, token) => {
   let shouldAddWildcard = false;
   if (query.length > 1) {
     const words = query.split(" ");
@@ -30,7 +28,7 @@ export const searchTracks = query => {
   limit=10`,
     {
       headers: {
-        Authorization: "Bearer " + OAUTH_TOKEN
+        Authorization: "Bearer " + token
       }
     }
   )
@@ -50,18 +48,4 @@ const displayAllTracks = tracks => {
     console.log("each track name :", tracks[i].name);
     allTracks.push(tracks[i].name);
   }
-  // setTracks(dispatch, allTracks);
 };
-
-// export default store => next => action => {
-//   const result = next(action);
-//   switch (action.type) {
-//     case SEARCH_TRACKS: {
-//       return store.dispatch(searchTracks(action.query));
-//       break;
-//     }
-//     default:
-//       break;
-//   }
-//   return result;
-// };

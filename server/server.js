@@ -1,5 +1,7 @@
 const { basename } = require("path");
 const fs = require("fs");
+const path = require("path");
+const bodyParser = require("body-parser");
 let request = require("request");
 const querystring = require("querystring");
 const AppConfig = require("../src/config/app");
@@ -8,11 +10,20 @@ const redirect_uri = `${AppConfig.HOST}/callback`;
 const client_id = AuthConfig.CLIENT_ID;
 const client_secret = AuthConfig.CLIENT_SECRET;
 
+const Queue = require("./models/Queue");
+
 var express = require("express");
 var cors = require("cors");
 var app = express();
 
+var Pusher = require("pusher");
+
+app.use(express.static(path.join(__dirname, "public")));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
+
+app.use("/queue", Queue);
 
 var stateKey = "spotify_auth_state";
 

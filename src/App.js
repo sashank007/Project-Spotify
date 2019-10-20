@@ -6,12 +6,10 @@ import { Provider } from "react-redux";
 import store from "./store";
 import "./App.css";
 import CurrentTrack from "./Components/CurrentTrack";
-import Pusher from "pusher-js";
+// import Pusher from "pusher-js";
 import Login from "./Components/Login/Login";
 
 function App() {
-  Pusher.logToConsole = true;
-
   function getUniqueId() {
     return (
       "public-" +
@@ -21,7 +19,7 @@ function App() {
     );
   }
   useEffect(() => {
-    // onLoad();
+    onLoad();
     callBackendAPI();
     // .then(res => console.log("response for login:", res));
   });
@@ -53,26 +51,6 @@ function App() {
         : "id=" + getUniqueId();
       return;
     }
-
-    var pusher = new Pusher("a3ef4965765d2b7fea88", {
-      cluster: "us3",
-      forceTLS: false
-    });
-
-    var channel = pusher.subscribe("my-channel");
-    channel.bind("my-event", function(data) {
-      alert(JSON.stringify(data));
-    });
-    channel.bind("client-text-edit", function(html) {
-      document.innerHTML = html;
-    });
-
-    function triggerChange(e) {
-      console.log("trigger change ...");
-      channel.trigger("client-text-edit", e.target.innerHTML);
-    }
-
-    document.addEventListener("input", triggerChange);
   };
 
   return (
