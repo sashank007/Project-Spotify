@@ -1,11 +1,20 @@
 import React, { Component, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { queueTrack, updateCurrentTrack } from "../Actions/QueueActions";
+import { queueTrack, updateCurrentTrack } from "../../Actions/QueueActions";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
-import { playTrack } from "../Middleware/playbackMiddleware";
+import { playTrack } from "../../Middleware/playbackMiddleware";
+import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
+import IconButton from "@material-ui/core/IconButton";
+
 import Pusher from "pusher-js";
-const Queue = () => {
+import "./Queue.css";
+import { Button } from "@material-ui/core";
+import UpIcon from "../Common/UpIcon";
+import DownIcon from "../Common/DownIcon";
+import Login from "../Login/Login";
+// import UpIcon from "../Common/UpIcon/UpIcon";
+const Queue = classes => {
   const { queue, accessToken } = useSelector(state => ({
     ...state.queueTrackReducer,
     ...state.sessionReducer
@@ -77,15 +86,26 @@ const Queue = () => {
         <li key={i}>
           <div>
             <span>{queuedTracks[i].name}</span>
-            <button className="btnUpvote" id={i} onClick={upVoteTrack}>
-              {/* <ArrowUpwardIcon id={i} onClick={upVoteTrack} /> */}
-              Up
-            </button>
-            <button id={i} onClick={downVoteTrack} className="btnDownvote">
-              {/* <ArrowDownwardIcon id={i} onClick={downVoteTrack} /> */}
-              Down
-            </button>
-            <span>Score: {queuedTracks[i].score}</span>
+            {/* <Button className="btnUpvote" id={i} onClick={upVoteTrack}> */}
+            {/* <ArrowUpwardIcon id={i} onClick={upVoteTrack} /> */}
+            {/* <Fab
+              variant="extended"
+              id={i}
+              onClick={upVoteTrack}
+              aria-label="delete"
+              className="fab"
+            > */}
+            <UpIcon id={i} click={upVoteTrack} />
+            {/* </Fab> */}
+
+            {/* <UpIcon id={i} click={upVoteTrack} /> */}
+            {/* Up */}
+            {/* </Button> */}
+            {/* <button id={i} onClick={downVoteTrack} className="btnDownvote"> */}
+            <DownIcon id={i} click={downVoteTrack} />
+            {/* Down */}
+            {/* </button> */}
+            <span>{queuedTracks[i].score}</span>
           </div>
         </li>
       ));
@@ -93,10 +113,28 @@ const Queue = () => {
   };
 
   return (
-    <div>
-      <h1>Queue</h1>
+    <div className="Queue-Container">
+      <Login />
+      <h3>Your Queue</h3>
       <ul>{getAllQueueItems()}</ul>
-      <button onClick={playNextTrack}>Play Next</button>
+      {/* <button onClick={playNextTrack}>Play Next</button> */}
+      {/* <Button
+        variant="contained"
+        color="primary"
+        onClick={playNextTrack}
+        size="large"
+        className={classes.button}
+        startIcon={<PlayCircleOutlineIcon />}
+      >
+        Play
+      </Button> */}
+      <IconButton
+        aria-label="delete"
+        onClick={playNextTrack}
+        className={classes.margin}
+      >
+        <PlayCircleOutlineIcon fontSize="large" />
+      </IconButton>
     </div>
   );
 };

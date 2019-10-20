@@ -4,14 +4,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { setTracks, searchQuery } from "../Actions/SearchActions";
 import { searchTracks } from "../Middleware/searchMiddleWare";
 import { queueTrack } from "../Actions/QueueActions";
-import Queue from "./Queue";
+import Queue from "./Queue/Queue";
 import AlignItemsList from "./ListItem";
 import TrackItem from "./ListItem";
 import CurrentTrack from "./CurrentTrack";
 import { sendQueuePusher } from "../Middleware/queueMiddleware";
 import { setPrivateID } from "../Actions/SessionActions";
 import SearchBar from "../Components/SearchBar/SearchBar";
-
+import "./Search.css";
 import Pusher from "pusher-js";
 const Search = props => {
   const { tracks, queue, accessToken, privateId } = useSelector(state => ({
@@ -117,7 +117,6 @@ const Search = props => {
     <div className="search-container">
       <SearchBar />
       {getAllTracks()}
-      <Queue />
     </div>
   );
 };

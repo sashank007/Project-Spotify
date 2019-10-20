@@ -12,7 +12,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { setTracks, searchQuery } from "../Actions/SearchActions";
 import { searchTracks } from "../Middleware/searchMiddleWare";
 import { queueTrack } from "../Actions/QueueActions";
-import Queue from "./Queue";
 import AlignItemsList from "./ListItem";
 import CurrentTrack from "./CurrentTrack";
 import { sendQueuePusher } from "../Middleware/queueMiddleware";
@@ -20,10 +19,15 @@ import { setPrivateID } from "../Actions/SessionActions";
 
 const useStyles = makeStyles(theme => ({
   root: {
-    width: "100%",
-    maxWidth: "90vw",
-    margin: "15px",
-    backgroundColor: theme.palette.background.paper
+    width: "95%",
+    maxWidth: "95vw",
+    margin: "2px",
+    // backgroundColor: "#fff",
+    color: "#fff",
+    display: "block",
+    borderRadius: "5px",
+    backgroundColor: "#000",
+    border: "0.4px solid white"
   },
   inline: {
     display: "inline"
@@ -71,14 +75,12 @@ export default function TrackItem(props) {
                 variant="body2"
                 className={classes.inline}
                 color="textPrimary"
-              >
-                Ali Connors
-              </Typography>
+              ></Typography>
             </React.Fragment>
           }
         />
       </ListItem>
-      <Divider variant="inset" component="li" />
+      {/* <Divider variant="inset" component="li" /> */}
     </List>
   );
 }

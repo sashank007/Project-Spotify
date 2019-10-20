@@ -1,5 +1,22 @@
 .App {
   text-align: center;
+  /* background-color: #404040; */
+  background: linear-gradient(
+    to right,
+    rgb(15, 32, 39),
+    rgb(32, 58, 67),
+    rgb(44, 83, 100),
+    rgb(202, 137, 17)
+  );
+  /* background: linear-gradient(to right, rgb(20, 30, 48), rgb(36, 59, 85)); */
+  background: linear-gradient(
+    to right,
+    rgb(0, 0, 0),
+    rgb(32, 31, 31),
+    rgb(28, 149, 103)
+  );
+  width: 100vw;
+  height: 100vh;
 }
 
 .App-logo {
@@ -7,13 +24,13 @@
 }
 
 .App-header {
-  background-color: #ffffff;
+  background-color: #282828;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-size: calc(10px + s2vmin);
   color: white;
 }
 

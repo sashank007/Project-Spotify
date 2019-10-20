@@ -8,6 +8,7 @@ import "./App.css";
 import CurrentTrack from "./Components/CurrentTrack";
 // import Pusher from "pusher-js";
 import Login from "./Components/Login/Login";
+import Queue from "./Components/Queue/Queue";
 
 function App() {
   const [privateId, setPrivateId] = useState();
@@ -50,8 +51,9 @@ function App() {
     <div className="App">
       <Provider store={store}>
         <Search />
-        <Login />
-        <CurrentTrack />
+
+        {/* <CurrentTrack /> */}
+        <Queue />
       </Provider>
     </div>
   );

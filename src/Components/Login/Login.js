@@ -50,7 +50,7 @@ export default function Login() {
       {accessToken === "" ? (
         <Button onClick={spotifyLogin}>Login</Button>
       ) : (
-        <div>Welcome {userName}!!</div>
+        <div> {userName}</div>
       )}
     </div>
   );

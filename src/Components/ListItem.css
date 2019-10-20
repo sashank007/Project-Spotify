@@ -1,0 +1,12 @@
+.list-item-root {
+  width: "95%";
+  max-width: "95vw";
+  margin: "2px";
+  text: "#fff";
+  display: "block";
+  border-radius: "5px";
+  background-color: "#fff";
+}
+.inline {
+  display: "inline";
+}
