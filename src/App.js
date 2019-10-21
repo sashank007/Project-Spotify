@@ -51,7 +51,7 @@ function App() {
     <div className="App">
       <Provider store={store}>
         <Search />
-
+        <Login />
         {/* <CurrentTrack /> */}
         <Queue />
       </Provider>

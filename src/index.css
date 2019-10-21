@@ -4,18 +4,22 @@ body {
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif; */
   -webkit-font-smoothing: antialiased;
-  font-family: "Quicksand", sans-serif;
+  /* font-family: "Quicksand", sans-serif; */
+  /* font-family: "Alegreya", serif; */
+  font-family: "Luckiest Guy", cursive;
   color: #b3b3b3;
   width: 100vw;
   height: 100vh;
-  background: linear-gradient(
+  /* background: linear-gradient(
     to right,
     rgb(0, 0, 0),
     rgb(32, 31, 31),
     rgb(28, 149, 103)
-  );
+  ); */
+  background: #1db954;
   overflow-x: hidden;
-  text-shadow: 2px 2px 4px #000000;
+  text-shadow: 2px 8px 6px rgba(0, 0, 0, 0.2),
+    0px -5px 35px rgba(255, 255, 255, 0.3);
   -moz-osx-font-smoothing: grayscale;
 }
 

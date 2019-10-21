@@ -54,11 +54,15 @@ export default function Login() {
     <div className="Login-Container">
       {accessToken === "" ? (
         <Button
-          style={{ color: "white", fontFamily: "sans-serif", marginTop: "5px" }}
+          style={{
+            fontFamily: "'Rajdhani', sans-serif",
+            marginTop: "5px"
+          }}
           onClick={spotifyLogin}
           component="span"
+          variant="outlined"
         >
-          Login
+          LOGIN
         </Button>
       ) : (
         <div> {userName}</div>

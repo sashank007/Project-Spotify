@@ -5,6 +5,7 @@ import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 import { playTrack } from "../../Middleware/playbackMiddleware";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
+import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import IconButton from "@material-ui/core/IconButton";
 
 import Pusher from "pusher-js";
@@ -114,30 +115,19 @@ const Queue = classes => {
 
   return (
     <div className="Queue-Container">
-      <Login />
-      <h3 style={{ color: "rgb(235, 211, 211)" }}>Your Queue</h3>
+      <p>YOUR QUEUE</p>
       <ul>{getAllQueueItems()}</ul>
-      {/* <button onClick={playNextTrack}>Play Next</button> */}
-      {/* <Button
+      <Button
         variant="contained"
-        color="primary"
-        onClick={playNextTrack}
-        size="large"
         className={classes.button}
-        startIcon={<PlayCircleOutlineIcon />}
+        style={{
+          backgroundColor: "#fff",
+          fontFamily: "'Luckiest Guy', cursive"
+        }}
+        startIcon={<PlayArrowIcon />}
       >
         Play
-      </Button> */}
-      <IconButton
-        aria-label="delete"
-        onClick={playNextTrack}
-        className={classes.margin}
-      >
-        <PlayCircleOutlineIcon
-          style={{ fill: "rgb(235, 211, 211)" }}
-          fontSize="large"
-        />
-      </IconButton>
+      </Button>
     </div>
   );
 };

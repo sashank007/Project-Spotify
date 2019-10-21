@@ -1,6 +1,10 @@
 .Login-Container {
   position: absolute;
-  right: 0;
+  /* right: 0; */
   top: 0;
-  margin-right: 15px;
+  margin-left: 15px;
+  margin-top: 15px;
+  font-family: "Big Shoulders Text", cursive;
+
+  z-index: 999;
 }

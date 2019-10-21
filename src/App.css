@@ -1,16 +1,18 @@
 .App {
   text-align: center;
   /* background-color: #404040; */
-  background: linear-gradient(
+  /* background: linear-gradient(
     to right,
     rgb(15, 32, 39),
     rgb(32, 58, 67),
     rgb(44, 83, 100),
     rgb(202, 137, 17)
-  );
+  ); */
   /* background: linear-gradient(to right, rgb(20, 30, 48), rgb(36, 59, 85)); */
   /* background: linear-gradient(to right, rgb(0, 0, 0), rgb(32, 31, 31), #087e51); */
-  background: linear-gradient(to right, rgb(0, 0, 0), rgb(6, 4, 4), #086c46);
+  /* background: linear-gradient(to right, rgb(0, 0, 0), rgb(6, 4, 4), #086c46); */
+  /* background: #1db954; */
+  background: #f9f9f9;
   width: 100vw;
   height: 100vh;
 }
