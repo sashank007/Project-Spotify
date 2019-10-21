@@ -19,14 +19,15 @@ import { setPrivateID } from "../../Actions/SessionActions";
 
 const useStyles = makeStyles(theme => ({
   root: {
-    width: "95%",
-    maxWidth: "95vw",
-    margin: "2px",
-    color: "#fff",
+    width: "100%",
+    maxWidth: "100vw",
+    marginLeft: "5vw",
+    color: "#0000004a",
     display: "block",
     borderRadius: "5px",
-    backgroundColor: "#000",
-    border: "0.4px solid white"
+    backgroundColor: "#fff",
+    border: "0.4px solid white",
+    fontFamily: "'PT Sans Narrow', sans-serif"
   },
   inline: {
     display: "inline"
