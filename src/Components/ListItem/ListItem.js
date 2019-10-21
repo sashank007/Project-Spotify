@@ -62,24 +62,26 @@ export default function TrackItem(props) {
 
   return (
     <List className={classes.root} onClick={queueTheTrack}>
-      <ListItem alignItems="flex-start">
-        <ListItemAvatar>
-          <Avatar alt="Remy Sharp" src={trackImage} />
-        </ListItemAvatar>
-        <ListItemText
-          primary={trackName}
-          secondary={
-            <React.Fragment>
-              <Typography
-                component="span"
-                variant="body2"
-                className={classes.inline}
-                color="textPrimary"
-              ></Typography>
-            </React.Fragment>
-          }
-        />
-      </ListItem>
+      <div styles={{ height: "800px", overflowY: "scroll" }}>
+        <ListItem alignItems="flex-start">
+          <ListItemAvatar>
+            <Avatar alt="Remy Sharp" src={trackImage} />
+          </ListItemAvatar>
+          <ListItemText
+            primary={trackName}
+            secondary={
+              <React.Fragment>
+                <Typography
+                  component="span"
+                  variant="body2"
+                  className={classes.inline}
+                  color="textPrimary"
+                ></Typography>
+              </React.Fragment>
+            }
+          />
+        </ListItem>
+      </div>
       {/* <Divider variant="inset" component="li" /> */}
     </List>
   );
