@@ -2,10 +2,11 @@
   width: "95%";
   max-width: "95vw";
   margin: "2px";
-  text: "#fff";
+  color: "#0000004a";
   display: "block";
   border-radius: "5px";
   background-color: "#fff";
+  font-family: "PT Sans Narrow", sans-serif;
 }
 .inline {
   display: "inline";
