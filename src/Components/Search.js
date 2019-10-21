@@ -66,7 +66,8 @@ const Search = props => {
       console.log("data: ", data);
       // sendQueuePusher(queue);
       let currentPrivateId = getUrlParameter("id");
-      if (data.privateId === currentPrivateId) queueTrack(dispatch, data.queue);
+      // if (data.privateId === currentPrivateId)
+      queueTrack(dispatch, data.queue);
       // queueTrack(dispatch, data);
     });
   };
