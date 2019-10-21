@@ -9,12 +9,8 @@
     rgb(202, 137, 17)
   );
   /* background: linear-gradient(to right, rgb(20, 30, 48), rgb(36, 59, 85)); */
-  background: linear-gradient(
-    to right,
-    rgb(0, 0, 0),
-    rgb(32, 31, 31),
-    rgb(28, 149, 103)
-  );
+  /* background: linear-gradient(to right, rgb(0, 0, 0), rgb(32, 31, 31), #087e51); */
+  background: linear-gradient(to right, rgb(0, 0, 0), rgb(6, 4, 4), #086c46);
   width: 100vw;
   height: 100vh;
 }

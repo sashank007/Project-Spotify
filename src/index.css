@@ -15,6 +15,7 @@ body {
     rgb(28, 149, 103)
   );
   overflow-x: hidden;
+  text-shadow: 2px 2px 4px #000000;
   -moz-osx-font-smoothing: grayscale;
 }
 

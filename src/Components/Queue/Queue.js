@@ -115,7 +115,7 @@ const Queue = classes => {
   return (
     <div className="Queue-Container">
       <Login />
-      <h3>Your Queue</h3>
+      <h3 style={{ color: "rgb(235, 211, 211)" }}>Your Queue</h3>
       <ul>{getAllQueueItems()}</ul>
       {/* <button onClick={playNextTrack}>Play Next</button> */}
       {/* <Button
@@ -133,7 +133,10 @@ const Queue = classes => {
         onClick={playNextTrack}
         className={classes.margin}
       >
-        <PlayCircleOutlineIcon fontSize="large" />
+        <PlayCircleOutlineIcon
+          style={{ fill: "rgb(235, 211, 211)" }}
+          fontSize="large"
+        />
       </IconButton>
     </div>
   );

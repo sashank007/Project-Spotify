@@ -11,7 +11,7 @@
     rgb(0, 0, 0),
     /* rgb(67, 67, 67) */
   );
-  border-left: 0.8px solid rgba(255, 255, 255, 0.685);
+  border-left: 0.8px solid rgb(235, 211, 211);
   color: white;
   height: 100vh;
 }
@@ -19,4 +19,8 @@ ul {
   list-style-type: none;
   text-align: left;
   font-family: "Quicksand", sans-serif;
+}
+
+h3 {
+  font-size: 32px;
 }
