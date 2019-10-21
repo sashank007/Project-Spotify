@@ -5,7 +5,8 @@ import queryString from "query-string";
 import { setSessionToken } from "../../Actions/SessionActions";
 import "./Login.css";
 
-const BACKEND_URI = process.env.BACKEND_URI;
+const BACKEND_URI =
+  "https://flr2cnuhpc.execute-api.us-east-1.amazonaws.com/dev";
 console.log("setting backend uri : ", BACKEND_URI);
 
 export default function Login() {

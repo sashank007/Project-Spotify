@@ -1,6 +1,7 @@
 require("dotenv").config();
 
-const BACKEND_URI = process.env.BACKEND_URI;
+const BACKEND_URI =
+  "https://flr2cnuhpc.execute-api.us-east-1.amazonaws.com/dev";
 export const sendQueuePusher = (queue, privateId) => {
   fetch(BACKEND_URI + "/queue", {
     method: "post",
