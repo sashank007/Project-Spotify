@@ -1,11 +1,11 @@
 /* eslint-disable no-restricted-globals */
 import React, { useEffect, useState } from "react";
 import logo from "./logo.svg";
-import Search from "../src/Components/Search";
+import Search from "./Components/Search/Search";
 import { Provider } from "react-redux";
 import store from "./store";
 import "./App.css";
-import CurrentTrack from "./Components/CurrentTrack";
+import CurrentTrack from "./Components/CurrentTrack/CurrentTrack";
 // import Pusher from "pusher-js";
 import Login from "./Components/Login/Login";
 import Queue from "./Components/Queue/Queue";

@@ -9,20 +9,19 @@ import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
 
 import { useDispatch, useSelector } from "react-redux";
-import { setTracks, searchQuery } from "../Actions/SearchActions";
-import { searchTracks } from "../Middleware/searchMiddleWare";
-import { queueTrack } from "../Actions/QueueActions";
+import { setTracks, searchQuery } from "../../Actions/SearchActions";
+import { searchTracks } from "../../Middleware/searchMiddleWare";
+import { queueTrack } from "../../Actions/QueueActions";
 import AlignItemsList from "./ListItem";
-import CurrentTrack from "./CurrentTrack";
-import { sendQueuePusher } from "../Middleware/queueMiddleware";
-import { setPrivateID } from "../Actions/SessionActions";
+import CurrentTrack from "../CurrentTrack/CurrentTrack";
+import { sendQueuePusher } from "../../Middleware/queueMiddleware";
+import { setPrivateID } from "../../Actions/SessionActions";
 
 const useStyles = makeStyles(theme => ({
   root: {
     width: "95%",
     maxWidth: "95vw",
     margin: "2px",
-    // backgroundColor: "#fff",
     color: "#fff",
     display: "block",
     borderRadius: "5px",

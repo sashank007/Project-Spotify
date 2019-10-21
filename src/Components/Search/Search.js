@@ -1,16 +1,16 @@
 /* eslint-disable no-restricted-globals */
 import React, { Component, useRef, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setTracks, searchQuery } from "../Actions/SearchActions";
-import { searchTracks } from "../Middleware/searchMiddleWare";
-import { queueTrack } from "../Actions/QueueActions";
-import Queue from "./Queue/Queue";
-import AlignItemsList from "./ListItem";
-import TrackItem from "./ListItem";
-import CurrentTrack from "./CurrentTrack";
-import { sendQueuePusher } from "../Middleware/queueMiddleware";
-import { setPrivateID } from "../Actions/SessionActions";
-import SearchBar from "../Components/SearchBar/SearchBar";
+import { setTracks, searchQuery } from "../../Actions/SearchActions";
+import { searchTracks } from "../../Middleware/searchMiddleWare";
+import { queueTrack } from "../../Actions/QueueActions";
+import Queue from "../Queue/Queue";
+import AlignItemsList from "../ListItem/ListItem";
+import TrackItem from "../ListItem/ListItem";
+import CurrentTrack from "../CurrentTrack/CurrentTrack";
+import { sendQueuePusher } from "../../Middleware/queueMiddleware";
+import { setPrivateID } from "../../Actions/SessionActions";
+import SearchBar from "../SearchBar/SearchBar";
 import "./Search.css";
 import Pusher from "pusher-js";
 const Search = props => {
