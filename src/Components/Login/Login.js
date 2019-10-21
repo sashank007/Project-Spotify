@@ -4,9 +4,9 @@ import { Button } from "@material-ui/core";
 import queryString from "query-string";
 import { setSessionToken } from "../../Actions/SessionActions";
 import "./Login.css";
-require("dotenv").config();
 
 const BACKEND_URI = process.env.BACKEND_URI;
+console.log("setting backend uri : ", BACKEND_URI);
 
 export default function Login() {
   const spotifyLogin = () => {
