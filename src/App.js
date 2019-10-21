@@ -1,5 +1,6 @@
 /* eslint-disable no-restricted-globals */
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import logo from "./logo.svg";
 import Search from "./Components/Search/Search";
 import { Provider } from "react-redux";
@@ -52,7 +53,7 @@ function App() {
       <Provider store={store}>
         <Search />
         <Login />
-        {/* <CurrentTrack /> */}
+        <CurrentTrack />
         <Queue />
       </Provider>
     </div>

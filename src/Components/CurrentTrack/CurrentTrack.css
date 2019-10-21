@@ -1,23 +1,46 @@
 .current-track {
   width: 100vw;
-  height: 125px;
+  height: 100px;
   float: left;
   display: block;
-  background: #282828;
+  background: #383232;
   overflow: auto;
   position: absolute;
   bottom: 0;
+  -webkit-box-shadow: 10px 0 30px rgba(0, 0, 0, 0.05);
+  box-shadow: 3px 0 30px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+
+  transition-property: all;
+  transition-duration: 2s;
+  animation-name: fadeIn;
+  transition: height 1s ease-in-out;
 }
 #track-image {
-  width: 80px;
-  height: 80px;
+  width: 70px;
+  height: 70px;
   float: left;
+  margin-top: 15px;
+  margin-left: 15px;
 }
 
 #track-name {
   margin: auto;
-  font-family: spotify-circular, spotify-circular-cyrillic,
-    spotify-circular-arabic, spotify-circular-hebrew, Helvetica Neue, Helvetica,
-    Arial, Hiragino Kaku Gothic Pro, Meiryo, MS Gothic, sans-serif;
   color: #fff;
+  font-family: "Dosis", sans-serif;
+  width: 300px;
+  position: absolute;
+  left: 30px;
+  top: 40px;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(startYposition);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(endYposition);
+  }
 }

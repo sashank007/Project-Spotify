@@ -16,6 +16,22 @@ export const queueTrackReducer = (
   return state;
 };
 
+export const displayCurrentTrackReducer = (
+  state = {
+    showCurrentTrack: false
+  },
+  { type, payload }
+) => {
+  switch (type) {
+    case ACTION_TYPES.DISPLAY_CURRENT_TRACK: {
+      return { ...state, showCurrentTrack: payload };
+    }
+    default: {
+    }
+  }
+  return state;
+};
+
 export const currentTrackReducer = (
   state = {
     trackName: "",

@@ -4,7 +4,8 @@ import {
 } from "./Reducers/AllTracksReducers";
 import {
   queueTrackReducer,
-  currentTrackReducer
+  currentTrackReducer,
+  displayCurrentTrackReducer
 } from "./Reducers/QueueReducer";
 import { sessionReducer, privateIdReducer } from "./Reducers/SessionReducers";
 
@@ -16,7 +17,9 @@ const rootReducer = combineReducers({
   queueTrackReducer,
   currentTrackReducer,
   sessionReducer,
-  privateIdReducer
+  privateIdReducer,
+  currentTrackReducer,
+  displayCurrentTrackReducer
 });
 
 const store = createStore(rootReducer);

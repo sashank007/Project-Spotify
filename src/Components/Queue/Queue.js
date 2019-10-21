@@ -14,7 +14,7 @@ import { Button } from "@material-ui/core";
 import UpIcon from "../Common/UpIcon";
 import DownIcon from "../Common/DownIcon";
 import Login from "../Login/Login";
-// import UpIcon from "../Common/UpIcon/UpIcon";
+import { displayCurrentTrack } from "../../Actions/CurrentTrackActions";
 const Queue = classes => {
   const { queue, accessToken } = useSelector(state => ({
     ...state.queueTrackReducer,
@@ -44,6 +44,7 @@ const Queue = classes => {
 
   const playNextTrack = () => {
     console.log("current timer : ", timerId);
+    displayCurrentTrack(dispatch, true);
     if (queue.length > 0) {
       if (timerId) clearTimeout(timerId);
       //get device id
@@ -124,6 +125,7 @@ const Queue = classes => {
           backgroundColor: "#fff",
           fontFamily: "'Luckiest Guy', cursive"
         }}
+        onClick={playNextTrack}
         startIcon={<PlayArrowIcon />}
       >
         Play
