@@ -4,6 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 // import { SEARCH_TRACKS } from "../constants/ActionTypes";
 // import { searchTracksSuccess } from "../actions/searchActions";
 
+require("dotenv").config();
+
+const BACKEND_URI = process.env.BACKEND_URI;
+
 const SPOTIFY_API_BASE = "https://api.spotify.com/v1";
 
 export const searchTracks = (query, token) => {

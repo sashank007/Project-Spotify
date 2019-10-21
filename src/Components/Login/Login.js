@@ -4,9 +4,13 @@ import { Button } from "@material-ui/core";
 import queryString from "query-string";
 import { setSessionToken } from "../../Actions/SessionActions";
 import "./Login.css";
+require("dotenv").config();
+
+const BACKEND_URI = process.env.BACKEND_URI;
+
 export default function Login() {
   const spotifyLogin = () => {
-    window.location = "http://localhost:5000/login";
+    window.location = BACKEND_URI + "/login";
     // fetch("/login", { mode: "no-cors" }).then(res => {
     //   console.log("resp : ", res);
     //   let uri = res.url;

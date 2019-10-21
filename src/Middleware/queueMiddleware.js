@@ -1,5 +1,8 @@
+require("dotenv").config();
+
+const BACKEND_URI = process.env.BACKEND_URI;
 export const sendQueuePusher = (queue, privateId) => {
-  fetch("/queue", {
+  fetch(BACKEND_URI + "/queue", {
     method: "post",
     // mode: "no-cors",
     headers: new Headers({
