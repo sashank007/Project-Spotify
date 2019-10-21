@@ -62,7 +62,7 @@ export default function TrackItem(props) {
 
   return (
     <List className={classes.root} onClick={queueTheTrack}>
-      <div styles={{ height: "800px", overflowY: "scroll" }}>
+      <div>
         <ListItem alignItems="flex-start">
           <ListItemAvatar>
             <Avatar alt="Remy Sharp" src={trackImage} />
