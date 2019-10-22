@@ -22,10 +22,10 @@ function App() {
     );
   }
   useEffect(() => {
-    // onLoad();
+    onLoad();
     // callBackendAPI();
     // .then(res => console.log("response for login:", res));
-  });
+  }, []);
 
   // function to get a query param's value
   function getUrlParameter(name) {
@@ -43,7 +43,8 @@ function App() {
 
     if (!id) {
       setPrivateId(uniqueId);
-      location.search = location.search ? "&id=" + uniqueId : "id=" + uniqueId;
+      // location.search = location.search ? "&id=" + uniqueId : "id=" + uniqueId;
+      window.history.pushState({}, document.title, "/?id=" + uniqueId);
       return;
     }
   };

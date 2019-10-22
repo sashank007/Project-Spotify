@@ -14,11 +14,13 @@ import { Button } from "@material-ui/core";
 import UpIcon from "../Common/UpIcon";
 import DownIcon from "../Common/DownIcon";
 import Login from "../Login/Login";
+import { sendQueuePusher } from "../../Middleware/queueMiddleware";
 import { displayCurrentTrack } from "../../Actions/CurrentTrackActions";
 const Queue = classes => {
-  const { queue, accessToken } = useSelector(state => ({
+  const { queue, accessToken, privateId } = useSelector(state => ({
     ...state.queueTrackReducer,
-    ...state.sessionReducer
+    ...state.sessionReducer,
+    ...state.privateIdReducer
   }));
 
   const [trackSequence, setTrackSequence] = useState([]);
@@ -63,6 +65,7 @@ const Queue = classes => {
       playTrack(queue[0].trackId, deviceId, accessToken);
       queue.splice(0, 1);
       queueTrack(dispatch, queue);
+      sendQueuePusher(queue, privateId);
     }
   };
   const dispatch = useDispatch();
@@ -73,6 +76,7 @@ const Queue = classes => {
     queue[trackId].score += 1;
     queue.sort((a, b) => b.score - a.score);
     queueTrack(dispatch, queue);
+    sendQueuePusher(queue, privateId);
   };
   const downVoteTrack = e => {
     let trackId = e.target.id;
@@ -80,6 +84,7 @@ const Queue = classes => {
     queue[trackId].score -= 1;
     queue.sort((a, b) => b.score - a.score);
     queueTrack(dispatch, queue);
+    sendQueuePusher(queue, privateId);
   };
   const getAllQueueItems = () => {
     let queuedTracks = queue;
@@ -88,25 +93,8 @@ const Queue = classes => {
         <li key={i}>
           <div>
             <span>{queuedTracks[i].name}</span>
-            {/* <Button className="btnUpvote" id={i} onClick={upVoteTrack}> */}
-            {/* <ArrowUpwardIcon id={i} onClick={upVoteTrack} /> */}
-            {/* <Fab
-              variant="extended"
-              id={i}
-              onClick={upVoteTrack}
-              aria-label="delete"
-              className="fab"
-            > */}
             <UpIcon id={i} click={upVoteTrack} />
-            {/* </Fab> */}
-
-            {/* <UpIcon id={i} click={upVoteTrack} /> */}
-            {/* Up */}
-            {/* </Button> */}
-            {/* <button id={i} onClick={downVoteTrack} className="btnDownvote"> */}
             <DownIcon id={i} click={downVoteTrack} />
-            {/* Down */}
-            {/* </button> */}
             <span>{queuedTracks[i].score}</span>
           </div>
         </li>

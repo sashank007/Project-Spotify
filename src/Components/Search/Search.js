@@ -30,12 +30,6 @@ const Search = props => {
     if (privateId) {
       setPrivateID(dispatch, privateId);
     }
-    // if (process.browser) {
-    //   const refreshToken = localStorage.getItem("refreshToken");
-    //   const accessToken = localStorage.getItem("accessToken");
-    //   const expiresIn = localStorage.getItem("expiresIn");
-    //   console.log(refreshToken, accessToken, expiresIn);
-    // }
   }, []);
   function getUniqueId() {
     return (
@@ -72,41 +66,13 @@ const Search = props => {
     });
   };
 
-  // const onUpdateInput = () => {
-  //   console.log("search element : ", searchEl.current.value);
-
-  //   searchQuery(dispatch, searchText);
-  //   searchTracks(searchText, accessToken).then(res => {
-  //     setTracks(dispatch, res);
-  //   });
-  // };
-
-  const queueTheTrack = e => {
-    // let trackName = e.target.innerHTML;
-    // let id = e.target.id;
-    // queue.push({
-    //   name: trackName,
-    //   trackId: tracks[id].uri,
-    //   score: 0,
-    //   duration: tracks[id].duration_ms,
-    //   trackImage: tracks[id].album.images[0].url
-    // });
-    // sendQueuePusher(queue, privateId);
-    // queueTrack(dispatch, queue);
-  };
-
   const getAllTracks = () => {
     if (tracks) {
       console.log("get all tracks :", tracks);
       return tracks.map((keyName, i) => (
-        // <li key={i} id={i} onClick={queueTheTrack}>
-        //   {tracks[i].name}
-        // </li>
-
         <TrackItem
           key={i}
           id={i}
-          click={queueTheTrack}
           trackImage={tracks[i].album.images[0].url}
           trackName={tracks[i].name}
         />

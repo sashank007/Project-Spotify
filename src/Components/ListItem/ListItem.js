@@ -19,8 +19,8 @@ import { setPrivateID } from "../../Actions/SessionActions";
 
 const useStyles = makeStyles(theme => ({
   root: {
-    width: "100%",
-    maxWidth: "100vw",
+    width: "90%",
+    maxWidth: "90vw",
     marginLeft: "5vw",
     color: "#0000004a",
     display: "block",
@@ -40,7 +40,7 @@ export default function TrackItem(props) {
 
   const dispatch = useDispatch();
 
-  const { tracks, queue, accessToken, privateId } = useSelector(state => ({
+  const { tracks, queue, privateId } = useSelector(state => ({
     ...state.tracksReducer,
     ...state.queueTrackReducer,
     ...state.sessionReducer,
@@ -48,7 +48,8 @@ export default function TrackItem(props) {
   }));
 
   const queueTheTrack = e => {
-    console.log("queue the track:", e);
+    console.log("queue the track:", trackName);
+    console.log("queue...", queue);
     queue.push({
       name: trackName,
       trackId: tracks[id].uri,
@@ -82,7 +83,6 @@ export default function TrackItem(props) {
           />
         </ListItem>
       </div>
-      {/* <Divider variant="inset" component="li" /> */}
     </List>
   );
 }

@@ -7,6 +7,7 @@ import "./Login.css";
 
 const BACKEND_URI =
   "https://flr2cnuhpc.execute-api.us-east-1.amazonaws.com/dev";
+// const BACKEND_URI = "http://localhost:5000";
 console.log("setting backend uri : ", BACKEND_URI);
 
 export default function Login() {
@@ -46,8 +47,8 @@ export default function Login() {
     let token = parsed.access_token;
     if (!token) return;
     setSessionToken(dispatch, token);
-
     callMe(token);
+    window.history.pushState({}, document.title, "/");
   }, []);
 
   return (
