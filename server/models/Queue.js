@@ -11,10 +11,6 @@ var channels_client = new Pusher({
   encrypted: true
 });
 
-// router.get("/", (req, res) => {
-//   res.send("QUEUE");
-// });
-
 router.post("/", (req, res) => {
   console.log(req.body);
   channels_client.trigger("queue-channel", "queue-item", {

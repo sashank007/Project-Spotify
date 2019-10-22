@@ -18,7 +18,6 @@ const rootReducer = combineReducers({
   currentTrackReducer,
   sessionReducer,
   privateIdReducer,
-  currentTrackReducer,
   displayCurrentTrackReducer
 });
 

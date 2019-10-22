@@ -7,8 +7,14 @@ const AuthConfig = require("../src/config/auth");
 const redirect_uri = `${AppConfig.HOST}/callback`;
 const client_id = AuthConfig.CLIENT_ID;
 const client_secret = AuthConfig.CLIENT_SECRET;
+const MongoClient = require("mongodb").MongoClient;
 
 const Queue = require("./models/Queue");
+
+const mongoUser = "sas";
+const mongoDbName = "Spotiq";
+const mongoPass = "sashank007";
+const mongoConnStr = `mongodb+srv://${mongoUser}:${mongoPass}@cluster0-nydon.mongodb.net/${mongoDbName}?retryWrites=true`;
 
 var express = require("express");
 var cors = require("cors");
@@ -22,6 +28,31 @@ app.use(cors());
 app.use("/queue", Queue);
 
 var stateKey = "spotify_auth_state";
+
+const client = new MongoClient(mongoConnStr, {
+  useNewUrlParser: true
+});
+let db;
+
+const createConn = async () => {
+  await client.connect();
+  db = client.db("Spotiq");
+};
+
+const performQueryUpdateUsers = async (privateId, userName, userId) => {
+  const users = db.collection("users");
+
+  const newUser = {
+    privateId,
+    userName,
+    userId
+  };
+
+  return {
+    insertedUser: newUser,
+    mongoResult: await users.insertOne(newUser)
+  };
+};
 
 var generateRandomString = function(length) {
   var text = "";
@@ -50,6 +81,34 @@ app.use(function(req, res, next) {
   next();
 });
 
+//add new user to mongodb
+app.post("/new_user", async (req, res, next) => {
+  let privateId = req.body.privateId;
+  let userName = req.body.userName;
+  let userId = req.body.userId;
+
+  if (!client.isConnected()) {
+    // Cold start or connection timed out. Create new connection.
+    try {
+      await createConn();
+    } catch (e) {
+      res.json({
+        error: e.message
+      });
+      return;
+    }
+  }
+  try {
+    res.json(await performQueryUpdateUsers(privateId, userName, userId));
+    return;
+  } catch (e) {
+    res.send({
+      error: e.message
+    });
+    return;
+  }
+});
+
 app.get("/express_backend", (req, res) => {
   res.send({ express: "YOUR EXPRESS BACKEND IS CONNECTED TO REACT" });
 });
@@ -72,10 +131,12 @@ app.get("/callback", function(req, res) {
   };
   request.post(authOptions, function(error, response, body) {
     var access_token = body.access_token;
+    let expiration = body.expires_in;
+    console.log("body of token: ", body);
     let uri = process.env.FRONTEND_URI || "http://localhost:3000";
     //set the access token insidedb
     //in db, once access token set , pair with user name
-    res.redirect(uri + "?access_token=" + access_token);
+    res.redirect(uri + "?access_token=" + access_token + "&expr=" + expiration);
   });
 });
 

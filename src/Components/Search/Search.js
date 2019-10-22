@@ -22,7 +22,6 @@ const Search = props => {
   }));
 
   const dispatch = useDispatch();
-  const searchEl = useRef();
 
   useEffect(() => {
     onLoad();
