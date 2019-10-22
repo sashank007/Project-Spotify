@@ -16,7 +16,7 @@ export default function IDInput() {
     let id = "public-" + idInputRef.current.value;
     window.localStorage.setItem("privateId", id);
     setPrivateID(dispatch, id);
-    window.location.assign(document.title, "/?id=" + id);
+    window.location = (document.title, "/?id=" + id);
   };
 
   return (
