@@ -158,3 +158,36 @@ app.get("/login", function(req, res) {
       })
   );
 });
+
+app.post("/get_user_id", async function(req, res) {
+  var id = req.body.privateId;
+  if (!client.isConnected()) {
+    // Cold start or connection timed out. Create new connection.
+    try {
+      await createConn();
+    } catch (e) {
+      res.json({
+        error: e.message
+      });
+      return;
+    }
+  }
+
+  // Connection ready. Perform insert and return result.
+  try {
+    const users = db.collection("users");
+    const query = { privateId: id };
+    users.find(query).toArray((err, result) => {
+      res.send({
+        search_id: id,
+        users: result
+      });
+    });
+    return;
+  } catch (e) {
+    res.send({
+      error: e.message
+    });
+    return;
+  }
+});

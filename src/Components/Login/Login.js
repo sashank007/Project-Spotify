@@ -1,26 +1,28 @@
+/* eslint-disable no-restricted-globals */
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "@material-ui/core";
 import queryString from "query-string";
-import { setSessionToken } from "../../Actions/SessionActions";
+import { setSessionToken, setPrivateID } from "../../Actions/SessionActions";
 import authHost from "../../config/app";
-import { addNewUser } from "../../Middleware/userMiddleware";
+import { addNewUser, getAllUsers } from "../../Middleware/userMiddleware";
+import { setAllUsers } from "../../Actions/UsersActions";
 import "./Login.css";
-
 const BACKEND_URI = authHost.HOST;
-// const BACKEND_URI = "http://localhost:5000";
+
 console.log("setting backend uri : ", BACKEND_URI);
 
 export default function Login() {
   const spotifyLogin = () => {
     window.location = BACKEND_URI + "/login";
   };
-  let { accessToken, privateId } = useSelector(state => ({
+  let { accessToken } = useSelector(state => ({
     ...state.sessionReducer,
     ...state.privateIdReducer
   }));
 
   const [userName, setUserName] = useState("");
+  const [privateId, setPrivateId] = useState("");
 
   const dispatch = useDispatch();
 
@@ -33,38 +35,83 @@ export default function Login() {
       .then(data => {
         console.log("me data : ", data);
         setUserName(data.display_name);
-        addNewUser(privateId, data.display_name, data.id);
+        hasLoggedIn(data.display_name, data.id);
       });
   };
+  const handleUsers = (res, name, uid) => {
+    console.log(res);
+    let { users } = res;
+    let userIds = [];
+    setAllUsers(dispatch, users);
+    users.map((i, key) => {
+      console.log(users[key]);
+      userIds.push(users[key].userId);
+    });
+    if (userIds.indexOf(uid) < 0) {
+      console.log("user not in list ..");
+      addTheNewUser(name, uid);
+    }
+  };
 
-  useEffect(() => {
+  const checkLocalStorage = () => {
+    let [localStorageToken, localStorageExpiration] = fetchLocalStorage();
+    let expDate = new Date(parseInt(localStorageExpiration));
+    let currentDate = new Date();
+    if (localStorageToken && expDate > currentDate) {
+      setSessionToken(dispatch, localStorageToken);
+      callMe(localStorageToken);
+      return;
+    }
+  };
+
+  const checkUrl = () => {
     let parsed = queryString.parse(window.location.search);
     let token = parsed.access_token;
     let expiration = parsed.expr;
     let dateExpiration = new Date().getTime() + expiration * 1000;
-    let [localStorageToken, localStorageExpiration] = fetchLocalStorage();
-    console.log("token: ", token);
-    let expDate = new Date(parseInt(localStorageExpiration));
-    let currentDate = new Date();
-
-    if (!token && !localStorageToken) return;
-    if (localStorageToken && expDate > currentDate) {
-      setSessionToken(dispatch, localStorageToken);
-      callMe(localStorageToken);
-    } else {
-      setSessionToken(dispatch, token);
-      callMe(token);
+    if (token) {
       window.localStorage.setItem("access_token", token);
       window.localStorage.setItem("expiration", dateExpiration);
-    }
 
-    window.history.pushState({}, document.title, "/");
+      setSessionToken(dispatch, token);
+      callMe(token);
+      window.history.pushState({}, document.title, "/");
+    }
+  };
+
+  const hasLoggedIn = (userName, userId) => {
+    let id = window.localStorage.getItem("privateId");
+    setPrivateId(id);
+    getAllUsers(id)
+      .then(res => res.json())
+      .then(res => {
+        handleUsers(res, userName, userId);
+      });
+  };
+
+  useEffect(() => {
+    checkLocalStorage();
+    checkUrl();
   }, []);
 
   const fetchLocalStorage = () => {
     let token = window.localStorage.getItem("access_token");
     let expr = window.localStorage.getItem("expiration");
     return [token, expr];
+  };
+
+  function getUrlParameter(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+    var results = regex.exec(location.search);
+    return results === null
+      ? ""
+      : decodeURIComponent(results[1].replace(/\+/g, " "));
+  }
+
+  const addTheNewUser = (name, privateId) => {
+    var id = getUrlParameter("id");
+    addNewUser(id, name, privateId);
   };
 
   return (

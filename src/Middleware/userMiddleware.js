@@ -5,7 +5,6 @@ const BACKEND_URI = authHost.HOST;
 export const addNewUser = (privateId, userName, userId) => {
   fetch(BACKEND_URI + "/new_user", {
     method: "post",
-    // mode: "no-cors",
     headers: new Headers({
       "content-type": "application/json"
     }),
@@ -17,4 +16,20 @@ export const addNewUser = (privateId, userName, userId) => {
   })
     .then(res => res.json())
     .then(data => console.log(data));
+};
+
+export const getAllUsers = privateId => {
+  console.log("get all users:", privateId);
+  return fetch(BACKEND_URI + "/get_user_id", {
+    method: "post",
+    // mode: "no-cors",
+    headers: new Headers({
+      "content-type": "application/json"
+    }),
+    body: JSON.stringify({
+      privateId: privateId
+    })
+  });
+  // .then(res => res.json())
+  // .then(data => console.log(data));
 };

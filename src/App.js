@@ -10,6 +10,8 @@ import CurrentTrack from "./Components/CurrentTrack/CurrentTrack";
 // import Pusher from "pusher-js";
 import Login from "./Components/Login/Login";
 import Queue from "./Components/Queue/Queue";
+import IDInput from "./Components/IDInput/IDInput";
+import AllUsers from "./Components/AllUsers/AllUsers";
 
 function App() {
   const [privateId, setPrivateId] = useState();
@@ -18,7 +20,7 @@ function App() {
       "public-" +
       Math.random()
         .toString(36)
-        .substr(2, 9)
+        .substr(2, 4)
     );
   }
   useEffect(() => {
@@ -38,13 +40,17 @@ function App() {
   }
 
   const onLoad = () => {
-    var id = getUrlParameter("id");
+    var id = window.localStorage.getItem("privateId");
     let uniqueId = getUniqueId();
 
     if (!id) {
-      setPrivateId(uniqueId);
+      window.localStorage.setItem("privateId", uniqueId);
+      console.log("setting new uniqueid ...");
       // location.search = location.search ? "&id=" + uniqueId : "id=" + uniqueId;
       window.history.pushState({}, document.title, "/?id=" + uniqueId);
+      return;
+    } else {
+      window.history.pushState({}, document.title, "/?id=" + id);
       return;
     }
   };
@@ -56,6 +62,8 @@ function App() {
         <Login />
         <CurrentTrack />
         <Queue />
+        <AllUsers />
+        <IDInput />
       </Provider>
     </div>
   );
