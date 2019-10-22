@@ -41,16 +41,20 @@ export default function Login() {
   const handleUsers = (res, name, uid) => {
     console.log(res);
     let { users } = res;
+    let currentUsers = [];
     let userIds = [];
-    setAllUsers(dispatch, users);
+
     users.map((i, key) => {
       console.log(users[key]);
       userIds.push(users[key].userId);
+      currentUsers.push({ userName: users[key].userName });
     });
     if (userIds.indexOf(uid) < 0) {
       console.log("user not in list ..");
       addTheNewUser(name, uid);
+      currentUsers.push({ userName: name });
     }
+    setAllUsers(dispatch, currentUsers);
   };
 
   const checkLocalStorage = () => {

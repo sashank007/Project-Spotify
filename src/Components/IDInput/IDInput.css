@@ -1,5 +1,6 @@
 .idinput-container {
   left: 0;
   position: absolute;
-  top: 30;
+  bottom: 0;
+  margin: 5px;
 }

@@ -15,6 +15,7 @@ export default function AllUsers() {
 
   return (
     <div className="allusers-container">
+      <h3>Current Players</h3>
       <ul>{getAllUsers()}</ul>
     </div>
   );

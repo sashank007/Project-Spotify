@@ -1,5 +1,4 @@
 import * as ACTION_TYPES from "../ActionTypes/ActionTypes";
-import { searchTracks } from "../Middleware/searchMiddleWare";
 
 export const tracksReducer = (
   state = {
