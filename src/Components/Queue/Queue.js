@@ -46,6 +46,8 @@ const Queue = classes => {
 
   const playNextTrack = () => {
     console.log("current timer : ", timerId);
+    console.log("current queue : ", queue);
+    sendQueuePusher(queue, privateId);
     displayCurrentTrack(dispatch, true);
     if (queue.length > 0) {
       if (timerId) clearTimeout(timerId);
@@ -65,7 +67,6 @@ const Queue = classes => {
       playTrack(queue[0].trackId, deviceId, accessToken);
       queue.splice(0, 1);
       queueTrack(dispatch, queue);
-      sendQueuePusher(queue, privateId);
     }
   };
   const dispatch = useDispatch();
