@@ -56,7 +56,7 @@ const Search = props => {
     });
     var channel = pusher.subscribe("queue-channel");
     channel.bind("queue-item", function(data) {
-      console.log("data: ", data);
+      console.log("pusher added : ", data.queue);
       // sendQueuePusher(queue);
       let currentPrivateId = getUrlParameter("id");
       // if (data.privateId === currentPrivateId)
