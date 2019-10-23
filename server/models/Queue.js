@@ -3,15 +3,15 @@ const bodyparser = require("body-parser");
 const router = express.Router();
 var Pusher = require("pusher");
 
-var channels_client = new Pusher({
-  appId: "882030",
-  key: "a3ef4965765d2b7fea88",
-  secret: "f97e508d15786c2958bd",
-  cluster: "us3",
-  encrypted: true
-});
-
 router.post("/", (req, res) => {
+  var channels_client = new Pusher({
+    appId: "882030",
+    key: "a3ef4965765d2b7fea88",
+    secret: "f97e508d15786c2958bd",
+    cluster: "us3",
+    encrypted: false
+  });
+
   console.log(req.body);
   channels_client.trigger("queue-channel", "queue-item", {
     queue: req.body.queue,

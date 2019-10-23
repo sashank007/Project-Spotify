@@ -25,10 +25,12 @@ const Search = props => {
 
   useEffect(() => {
     onLoad();
-    let privateId = getUrlParameter("id");
-    if (privateId) {
-      setPrivateID(dispatch, privateId);
-    }
+    // let privateId = getUrlParameter("id");
+    // if (privateId) {
+    //   setPrivateID(dispatch, privateId);
+    // }
+    let privateId = window.localStorage.getItem("privateId");
+    if (privateId) setPrivateID(dispatch, privateId);
   }, []);
   function getUniqueId() {
     return (
