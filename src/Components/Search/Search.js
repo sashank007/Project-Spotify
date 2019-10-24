@@ -30,7 +30,8 @@ const Search = props => {
     //   setPrivateID(dispatch, privateId);
     // }
     let privateId = window.localStorage.getItem("privateId");
-    if (privateId) setPrivateID(dispatch, privateId);
+    // if (privateId)
+    setPrivateID(dispatch, privateId);
   }, []);
   function getUniqueId() {
     return (
