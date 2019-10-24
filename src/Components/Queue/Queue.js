@@ -31,19 +31,6 @@ const Queue = classes => {
     // pusherLoad();
   }, []);
 
-  const pusherLoad = () => {
-    var pusher = new Pusher("a3ef4965765d2b7fea88", {
-      cluster: "us3",
-      forceTLS: true
-    });
-    var channel = pusher.subscribe("queue-channel");
-    channel.bind("queue-item", function(data) {
-      alert(JSON.stringify(data));
-      console.log("data: ", data);
-      // queueTrack(dispatch, data);
-    });
-  };
-
   const playNextTrack = () => {
     console.log("current timer : ", timerId);
     console.log("current queue : ", queue);

@@ -30,8 +30,7 @@ const Search = props => {
     //   setPrivateID(dispatch, privateId);
     // }
     let privateId = window.localStorage.getItem("privateId");
-    // if (privateId)
-    setPrivateID(dispatch, privateId);
+    if (privateId) setPrivateID(dispatch, privateId);
   }, []);
   function getUniqueId() {
     return (
@@ -60,11 +59,10 @@ const Search = props => {
     });
     var channel = pusher.subscribe("queue-channel");
     channel.bind("queue-item", function(data) {
-      console.log("pusher added : ", data.queue);
+      console.log("pusher added  with private id : ", data.privateId);
       // sendQueuePusher(queue);
-      let currentPrivateId = getUrlParameter("id");
-      // if (data.privateId === currentPrivateId)
-      queueTrack(dispatch, data.queue);
+      let currentPrivateId = window.localStorage.getItem("privateId");
+      if (data.privateId === currentPrivateId) queueTrack(dispatch, data.queue);
       // queueTrack(dispatch, data);
     });
   };
