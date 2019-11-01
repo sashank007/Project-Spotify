@@ -16,7 +16,7 @@ import DownIcon from "../Common/DownIcon";
 import Login from "../Login/Login";
 import { sendQueuePusher } from "../../Middleware/queueMiddleware";
 import { displayCurrentTrack } from "../../Actions/CurrentTrackActions";
-const Queue = classes => {
+const Queue = (classes, props) => {
   const { queue, accessToken, privateId } = useSelector(state => ({
     ...state.queueTrackReducer,
     ...state.sessionReducer,
@@ -29,7 +29,13 @@ const Queue = classes => {
 
   useEffect(() => {
     // pusherLoad();
-  }, []);
+
+    console.log("updating queue...  ");
+  }, [queue]);
+
+  useEffect(() => {
+    console.log("got props...", props);
+  });
 
   const playNextTrack = () => {
     console.log("current timer : ", timerId);

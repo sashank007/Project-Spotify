@@ -53,18 +53,6 @@ const Search = props => {
 
   const onLoad = () => {
     Pusher.logToConsole = true;
-    var pusher = new Pusher("a3ef4965765d2b7fea88", {
-      cluster: "us3",
-      forceTLS: true
-    });
-    var channel = pusher.subscribe("queue-channel");
-    channel.bind("queue-item", function(data) {
-      console.log("pusher added  with private id : ", data.privateId);
-      // sendQueuePusher(queue);
-      let currentPrivateId = window.localStorage.getItem("privateId");
-      if (data.privateId === currentPrivateId) queueTrack(dispatch, data.queue);
-      // queueTrack(dispatch, data);
-    });
   };
 
   const getAllTracks = () => {

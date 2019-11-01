@@ -25,8 +25,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
-app.use("/queue", Queue);
-
 var stateKey = "spotify_auth_state";
 
 const client = new MongoClient(mongoConnStr, {
@@ -38,6 +36,8 @@ const createConn = async () => {
   await client.connect();
   db = client.db("Spotiq");
 };
+
+app.use("/queue", Queue);
 
 const performQueryUpdateUsers = async (privateId, userName, userId) => {
   const users = db.collection("users");

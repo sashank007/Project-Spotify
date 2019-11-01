@@ -4,8 +4,7 @@ const BACKEND_URI = authHost.HOST;
 // const BACKEND_URI = "http://localhost:5000";
 export const sendQueuePusher = (queue, privateId) => {
   fetch(BACKEND_URI + "/queue", {
-    method: "post",
-    // mode: "no-cors",
+    method: "POST",
     headers: new Headers({
       "content-type": "application/json"
     }),
