@@ -50,16 +50,16 @@ function App() {
       forceTLS: false
     });
 
-    var channel = pusher.subscribe("queue-channel");
-    channel.bind("queue-item", function(data) {
-      console.log("pusher added  with private id : ", data);
-      // sendQueuePusher(queue);
-      // let currentPrivateId = window.localStorage.getItem("privateId");
-      // if (data.privateId === currentPrivateId)
-      // queueTrack(dispatch, data.queue);
-      setQ(data.queue);
-      // queueTrack(dispatch, data);
-    });
+    // var channel = pusher.subscribe("queue-channel");
+    // channel.bind("queue-item", function(data) {
+    //   console.log("pusher added  with private id : ", data);
+    //   // sendQueuePusher(queue);
+    //   // let currentPrivateId = window.localStorage.getItem("privateId");
+    //   // if (data.privateId === currentPrivateId)
+    //   // queueTrack(dispatch, data.queue);
+    //   setQ(data.queue);
+    //   // queueTrack(dispatch, data);
+    // });
 
     if (!id) {
       window.localStorage.setItem("privateId", uniqueId);
