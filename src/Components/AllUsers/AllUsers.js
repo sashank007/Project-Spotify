@@ -10,13 +10,22 @@ export default function AllUsers() {
   }));
 
   const getAllUsers = () => {
-    return playingUsers.map((i, key) => <li>{playingUsers[key].userName}</li>);
+    if (playingUsers) {
+      return playingUsers.map((i, key) => (
+        <li key={i}>
+          <div>
+            <span>{playingUsers[key].userName}</span>
+            <span>{playingUsers[key].points}</span>
+          </div>
+        </li>
+      ));
+    }
   };
 
   return (
     <div className="allusers-container">
-      <h3>Current Players</h3>
-      <ul>{getAllUsers()}</ul>
+      <p>CURRENT PLAYERS</p>
+      {/* <ul>{getAllUsers()}</ul> */}
     </div>
   );
 }

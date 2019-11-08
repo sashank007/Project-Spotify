@@ -39,9 +39,9 @@ const Queue = (classes, props) => {
 
   const playNextTrack = () => {
     console.log("current timer : ", timerId);
-    console.log("current queue : ", queue);
-    sendQueuePusher(queue, privateId);
-    displayCurrentTrack(dispatch, true);
+    console.log("play next track queue : ", queue);
+
+    //check if queue is not empty
     if (queue.length > 0) {
       if (timerId) clearTimeout(timerId);
       //get device id
@@ -50,18 +50,31 @@ const Queue = (classes, props) => {
         trackImage: queue[0].trackImage,
         trackDuration: queue[0].duration
       };
+      //update the current track to be top track
       updateCurrentTrack(dispatch, payload);
-      //dispatch currentTrack
-      const deviceId = "23ac1242e1b5a0cdf2e744c6ca242964bce8edad";
-      console.log("playing track...");
+
+      //set duration for timer
       let duration = queue[0].duration;
       console.log("track duration:", duration);
       timerId = setTimeout(playNextTrack, duration);
-      playTrack(queue[0].trackId, deviceId, accessToken);
+
+      //play the current track
+      playTrack(queue[0].trackId, "", accessToken);
+
+      //remove the top track
+      console.log("before removing track: ", queue);
       queue.splice(0, 1);
+      console.log("removing track: ", queue);
+
+      //update local queue and client pusher
       queueTrack(dispatch, queue);
+      sendQueuePusher(queue, privateId);
+
+      //display the current track in player
+      displayCurrentTrack(dispatch, true);
     }
   };
+
   const dispatch = useDispatch();
   const upVoteTrack = e => {
     console.log("event:", e.target);
@@ -72,6 +85,7 @@ const Queue = (classes, props) => {
     queueTrack(dispatch, queue);
     sendQueuePusher(queue, privateId);
   };
+
   const downVoteTrack = e => {
     let trackId = e.target.id;
     setQueueModified(true);
@@ -80,6 +94,7 @@ const Queue = (classes, props) => {
     queueTrack(dispatch, queue);
     sendQueuePusher(queue, privateId);
   };
+
   const getAllQueueItems = () => {
     let queuedTracks = queue;
     if (queuedTracks) {

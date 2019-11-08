@@ -2,6 +2,7 @@ const express = require("express");
 const bodyparser = require("body-parser");
 const router = express.Router();
 var Pusher = require("pusher");
+// const Pusher = require("pusher-lambda-promise");
 
 var pusher = new Pusher({
   appId: "882030",
@@ -27,6 +28,10 @@ router.post("/", (req, res) => {
   const pushNotification = async msg => {
     return await asyncTrigger(msg);
   };
+
+  // pusher
+  //   .trigger("queue-channel", "queue-item", { queue: "test" })
+  //   .then(res => console.log(res));
 
   pushNotification({ queue: req.body.queue, privateId: req.body.privateId });
   // channels_client.trigger("queue-channel", "queue-item", {

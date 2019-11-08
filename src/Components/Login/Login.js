@@ -38,6 +38,7 @@ export default function Login() {
         hasLoggedIn(data.display_name, data.id);
       });
   };
+
   const handleUsers = (res, name, uid) => {
     console.log(res);
     let { users } = res;
@@ -49,6 +50,7 @@ export default function Login() {
       userIds.push(users[key].userId);
       currentUsers.push({ userName: users[key].userName });
     });
+
     if (userIds.indexOf(uid) < 0) {
       console.log("user not in list ..");
       addTheNewUser(name, uid);
@@ -115,7 +117,7 @@ export default function Login() {
 
   const addTheNewUser = (name, privateId) => {
     var id = getUrlParameter("id");
-    addNewUser(id, name, privateId);
+    addNewUser(id, name, privateId, 10);
   };
 
   return (

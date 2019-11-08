@@ -39,13 +39,14 @@ const createConn = async () => {
 
 app.use("/queue", Queue);
 
-const performQueryUpdateUsers = async (privateId, userName, userId) => {
+const performQueryUpdateUsers = async (privateId, userName, userId, points) => {
   const users = db.collection("users");
 
   const newUser = {
     privateId,
     userName,
-    userId
+    userId,
+    points
   };
 
   return {
@@ -86,6 +87,7 @@ app.post("/new_user", async (req, res, next) => {
   let privateId = req.body.privateId;
   let userName = req.body.userName;
   let userId = req.body.userId;
+  let points = req.body.points;
 
   if (!client.isConnected()) {
     // Cold start or connection timed out. Create new connection.
@@ -99,7 +101,9 @@ app.post("/new_user", async (req, res, next) => {
     }
   }
   try {
-    res.json(await performQueryUpdateUsers(privateId, userName, userId));
+    res.json(
+      await performQueryUpdateUsers(privateId, userName, userId, points)
+    );
     return;
   } catch (e) {
     res.send({

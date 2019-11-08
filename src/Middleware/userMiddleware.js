@@ -2,7 +2,7 @@ import authHost from "../config/app";
 
 const BACKEND_URI = authHost.HOST;
 // const BACKEND_URI = "http://localhost:5000";
-export const addNewUser = (privateId, userName, userId) => {
+export const addNewUser = (privateId, userName, userId, points) => {
   fetch(BACKEND_URI + "/new_user", {
     method: "post",
     headers: new Headers({
@@ -11,7 +11,8 @@ export const addNewUser = (privateId, userName, userId) => {
     body: JSON.stringify({
       privateId: privateId,
       userName: userName,
-      userId: userId
+      userId: userId,
+      points: points
     })
   })
     .then(res => res.json())
