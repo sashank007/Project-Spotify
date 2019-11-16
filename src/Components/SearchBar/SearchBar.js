@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
     alignItems: "center",
     width: 800,
     overflowX: "none",
-    marginLeft: "10vw",
+    marginLeft: "15vw",
     marginTop: "15px"
   },
   input: {

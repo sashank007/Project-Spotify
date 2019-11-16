@@ -16,6 +16,22 @@ export const sessionReducer = (
   return state;
 };
 
+export const socketReducer = (
+  state = {
+    socket: null
+  },
+  { type, payload }
+) => {
+  switch (type) {
+    case ACTION_TYPES.SET_SOCKET: {
+      return { ...state, socket: payload };
+    }
+    default: {
+    }
+  }
+  return state;
+};
+
 export const privateIdReducer = (
   state = {
     privateId: ""

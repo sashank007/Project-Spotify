@@ -7,3 +7,7 @@ export const setSessionToken = (dispatch = null, payload = null) => {
 export const setPrivateID = (dispatch = null, payload = null) => {
   dispatch({ type: ACTION_TYPES.SET_PRIVATE_ID, payload: payload });
 };
+
+export const setSocket = (dispatch = null, payload = null) => {
+  dispatch({ type: ACTION_TYPES.SET_SOCKET, payload: payload });
+};

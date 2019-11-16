@@ -13,9 +13,18 @@ import Queue from "./Components/Queue/Queue";
 import IDInput from "./Components/IDInput/IDInput";
 import AllUsers from "./Components/AllUsers/AllUsers";
 
+import Socket from "./SocketInterface";
+import authHost from "./config/app";
+import MiddleComponent from "./Components/MiddleComponent/MiddleComponent";
+
+const SOCKET_URI = authHost.SOCKET;
+
 function App() {
   const [privateId, setPrivateId] = useState();
   const [q, setQ] = useState({});
+
+  let socket = new Socket(SOCKET_URI);
+
   function getUniqueId() {
     return (
       "public-" +
@@ -41,14 +50,16 @@ function App() {
       : decodeURIComponent(results[1].replace(/\+/g, " "));
   }
 
+  const createSocketConn = () => {
+    //create a new socket connection
+    socket.createConnection();
+  };
+
   const onLoad = () => {
     var id = window.localStorage.getItem("privateId");
     let uniqueId = getUniqueId();
 
-    var pusher = new Pusher("a3ef4965765d2b7fea88", {
-      cluster: "us3",
-      forceTLS: false
-    });
+    // createSocketConn();
 
     // var channel = pusher.subscribe("queue-channel");
     // channel.bind("queue-item", function(data) {
@@ -76,12 +87,7 @@ function App() {
   return (
     <div className="App">
       <Provider store={store}>
-        <Search />
-        <Login />
-        <CurrentTrack />
-        <Queue q={q} />
-        <AllUsers />
-        <IDInput />
+        <MiddleComponent />
       </Provider>
     </div>
   );

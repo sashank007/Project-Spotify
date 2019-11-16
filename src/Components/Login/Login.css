@@ -2,9 +2,9 @@
   position: absolute;
   /* right: 0; */
   top: 0;
-  margin-left: 15px;
-  margin-top: 15px;
+  right: 0;
+  margin-right: 10px;
+  margin-top: 10px;
   font-family: "Luckiest Guy", cursive;
-
   z-index: 999;
 }

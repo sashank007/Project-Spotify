@@ -1,6 +1,7 @@
 import React, { Component, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { queueTrack, updateCurrentTrack } from "../../Actions/QueueActions";
+import { setSocket } from "../../Actions/SessionActions";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 import { playTrack } from "../../Middleware/playbackMiddleware";
@@ -8,34 +9,71 @@ import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import IconButton from "@material-ui/core/IconButton";
 
+import {
+  updateCurrentUser,
+  getAllUsers
+} from "../../Middleware/userMiddleware";
+
 import Pusher from "pusher-js";
 import "./Queue.css";
+import { setAllUsers } from "../../Actions/UsersActions";
 import { Button } from "@material-ui/core";
 import UpIcon from "../Common/UpIcon";
 import DownIcon from "../Common/DownIcon";
 import Login from "../Login/Login";
 import { sendQueuePusher } from "../../Middleware/queueMiddleware";
 import { displayCurrentTrack } from "../../Actions/CurrentTrackActions";
-const Queue = (classes, props) => {
-  const { queue, accessToken, privateId } = useSelector(state => ({
-    ...state.queueTrackReducer,
-    ...state.sessionReducer,
-    ...state.privateIdReducer
-  }));
 
-  const [trackSequence, setTrackSequence] = useState([]);
-  const [queueModified, setQueueModified] = useState(false);
+import Socket from "../../SocketInterface";
+import authHost from "../../config/app";
+
+const SOCKET_URI = authHost.SOCKET;
+
+const Queue = (classes, props) => {
+  console.log("queue props: ", props);
+
+  const { queue, accessToken, privateId, playingUsers, socket } = useSelector(
+    state => ({
+      ...state.queueTrackReducer,
+      ...state.sessionReducer,
+      ...state.privateIdReducer,
+      ...state.allUsersReducer,
+      ...state.socketReducer
+    })
+  );
+
   let timerId = null;
 
-  useEffect(() => {
-    // pusherLoad();
+  const dispatch = useDispatch();
 
-    console.log("updating queue...  ");
-  }, [queue]);
+  const addToQueue = data => {
+    console.log("new data received: ", data);
+
+    try {
+      let updatedQueue = JSON.parse(data);
+      queueTrack(dispatch, updatedQueue);
+    } catch (e) {
+      console.log("parsed data and failed : ", data);
+    }
+  };
+
+  const sendSocketData = e => {
+    socket.sendMessage(JSON.stringify(queue));
+  };
+  const createSocketConn = () => {
+    let s = new Socket(SOCKET_URI);
+    setSocket(dispatch, s);
+
+    s.createConnection();
+
+    //listen to new messages
+    s.onMessageReceived(addToQueue);
+  };
 
   useEffect(() => {
-    console.log("got props...", props);
-  });
+    console.log("re rendering...");
+    createSocketConn();
+  }, []);
 
   const playNextTrack = () => {
     console.log("current timer : ", timerId);
@@ -61,6 +99,22 @@ const Queue = (classes, props) => {
       //play the current track
       playTrack(queue[0].trackId, "", accessToken);
 
+      //reduce user points
+      console.log("playing users: ", playingUsers);
+
+      updateCurrentUser(
+        privateId,
+        "r8ggyba4l1r5gxxrjrubv0y6u",
+        playingUsers[0].points - 1
+      );
+
+      //fetch all users again
+      getAllUsers(privateId)
+        .then(res => res.json())
+        .then(res => {
+          handleUsers(res);
+        });
+
       //remove the top track
       console.log("before removing track: ", queue);
       queue.splice(0, 1);
@@ -68,31 +122,55 @@ const Queue = (classes, props) => {
 
       //update local queue and client pusher
       queueTrack(dispatch, queue);
-      sendQueuePusher(queue, privateId);
+
+      //update to all users
+      sendSocketData(queue);
 
       //display the current track in player
       displayCurrentTrack(dispatch, true);
     }
   };
 
-  const dispatch = useDispatch();
+  const handleUsers = (res, name, uid) => {
+    console.log(res);
+    let { users } = res;
+    let currentUsers = [];
+    let userIds = [];
+    let points = [];
+
+    users.map((i, key) => {
+      console.log(users[key]);
+      userIds.push(users[key].userId);
+      points.push(users[key].points);
+      currentUsers.push({
+        userName: users[key].userName,
+        userId: users[key].userId,
+        points: users[key].points
+      });
+    });
+    setAllUsers(dispatch, currentUsers);
+  };
+
   const upVoteTrack = e => {
-    console.log("event:", e.target);
-    setQueueModified(true);
     let trackId = e.target.id;
     queue[trackId].score += 1;
     queue.sort((a, b) => b.score - a.score);
     queueTrack(dispatch, queue);
-    sendQueuePusher(queue, privateId);
+
+    sendSocketData(queue);
   };
 
   const downVoteTrack = e => {
     let trackId = e.target.id;
-    setQueueModified(true);
+
     queue[trackId].score -= 1;
     queue.sort((a, b) => b.score - a.score);
+
+    //queue the new track
     queueTrack(dispatch, queue);
-    sendQueuePusher(queue, privateId);
+
+    //send to all users on same session
+    sendSocketData(queue);
   };
 
   const getAllQueueItems = () => {

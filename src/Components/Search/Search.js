@@ -14,12 +14,15 @@ import SearchBar from "../SearchBar/SearchBar";
 import "./Search.css";
 import Pusher from "pusher-js";
 const Search = props => {
-  const { tracks, queue, accessToken, privateId } = useSelector(state => ({
-    ...state.tracksReducer,
-    ...state.queueTrackReducer,
-    ...state.sessionReducer,
-    ...state.privateIdReducer
-  }));
+  const { tracks, queue, accessToken, privateId, socket } = useSelector(
+    state => ({
+      ...state.tracksReducer,
+      ...state.queueTrackReducer,
+      ...state.sessionReducer,
+      ...state.privateIdReducer,
+      ...state.socketReducer
+    })
+  );
 
   const dispatch = useDispatch();
 

@@ -1,6 +1,6 @@
 .SearchBox {
   position: absolute;
-  left: 0;
+  left: 20;
   top: 0;
 }
 
@@ -14,9 +14,9 @@
   position: absolute;
   top: 0;
   width: 80vw;
-  left: 0;
+  left: 20;
   height: 80vh;
-  overflow-y: scroll;
+  /* overflow-y: scroll; */
 }
 ul {
   list-style-type: none;

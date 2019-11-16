@@ -8,7 +8,10 @@ import authHost from "../../config/app";
 import { addNewUser, getAllUsers } from "../../Middleware/userMiddleware";
 import { setAllUsers } from "../../Actions/UsersActions";
 import "./Login.css";
+import Socket from "../../SocketInterface";
+
 const BACKEND_URI = authHost.HOST;
+const SOCKET_URI = authHost.SOCKET;
 
 console.log("setting backend uri : ", BACKEND_URI);
 
@@ -44,11 +47,17 @@ export default function Login() {
     let { users } = res;
     let currentUsers = [];
     let userIds = [];
+    let points = [];
 
     users.map((i, key) => {
       console.log(users[key]);
       userIds.push(users[key].userId);
-      currentUsers.push({ userName: users[key].userName });
+      points.push(users[key].points);
+      currentUsers.push({
+        userName: users[key].userName,
+        userId: users[key].userId,
+        points: users[key].points
+      });
     });
 
     if (userIds.indexOf(uid) < 0) {

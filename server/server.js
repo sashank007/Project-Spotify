@@ -66,7 +66,7 @@ var generateRandomString = function(length) {
   return text;
 };
 
-app.listen(process.env.PORT || 5000, err => {
+var server = app.listen(process.env.PORT || 5000, err => {
   if (err) throw err;
   console.log(`> Ready on http://localhost:${process.env.PORT || 3000}`);
 });
@@ -182,10 +182,49 @@ app.post("/get_user_id", async function(req, res) {
     const users = db.collection("users");
     const query = { privateId: id };
     users.find(query).toArray((err, result) => {
+      console.log("result for user: ", result);
       res.send({
         search_id: id,
         users: result
       });
+    });
+    return;
+  } catch (e) {
+    res.send({
+      error: e.message
+    });
+    return;
+  }
+});
+
+app.post("/update_user", async function(req, res) {
+  var id = req.body.privateId;
+  var userId = req.body.userId;
+  var new_points = req.body.points;
+  if (!client.isConnected()) {
+    // Cold start or connection timed out. Create new connection.
+    try {
+      await createConn();
+    } catch (e) {
+      res.json({
+        error: e.message
+      });
+      return;
+    }
+  }
+
+  // Connection ready. Perform insert and return result.
+  try {
+    const users = db.collection("users");
+    const query = { privateId: id, userId: userId };
+
+    //set new value
+    var newvalues = { $set: { points: parseInt(new_points) } };
+    console.log("query: ", query);
+    //update one
+    users.updateOne(query, newvalues, function(err, res) {
+      if (err) throw err;
+      console.log("1 document updated");
     });
     return;
   } catch (e) {

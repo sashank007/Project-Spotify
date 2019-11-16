@@ -6,7 +6,7 @@
   height: 800px;
 } */
 
-.allusers-Container {
+.allusers-container {
   /* left: 0;
     top: 0;
     width: 100px;
@@ -19,9 +19,10 @@
     justify-content: flex-start; */
   -webkit-box-shadow: 10px 0 30px rgba(0, 0, 0, 0.05);
   box-shadow: 3px 0 30px rgba(0, 0, 0, 0.1);
-  width: 20vw;
+  width: 8vw;
   position: absolute;
-  right: 0;
+  left: 0;
+  padding: 10px;
   /* background: #000000; */
   /* background: linear-gradient(to right, rgb(20, 30, 48), rgb(36, 59, 85)); */
   /* background: linear-gradient(to right, rgb(0, 0, 0), rgb(67, 67, 67)); */
@@ -37,16 +38,22 @@
   color: #5a55558a;
   height: 100vh;
 }
-ul {
-  list-style-type: none;
-  text-align: left;
-  font-family: "Quicksand", sans-serif;
-}
 
-p {
-  font-size: 32px;
+.current-players-heading {
+  font-size: 24px;
   color: #0000008a;
   /* font-family: "Alegreya", serif; */
   /* font-family: "Rajdhani", sans-serif; */
   font-family: "Luckiest Guy", cursive;
+}
+
+.users-list {
+  list-style-type: none;
+  left: 0;
+  right: 0;
+  margin-left: 10px;
+  font-family: "Quicksand", sans-serif;
+}
+.points-container {
+  margin-left: 10px;
 }

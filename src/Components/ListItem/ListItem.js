@@ -15,7 +15,7 @@ import { queueTrack } from "../../Actions/QueueActions";
 import AlignItemsList from "./ListItem";
 import CurrentTrack from "../CurrentTrack/CurrentTrack";
 import { sendQueuePusher } from "../../Middleware/queueMiddleware";
-import { setPrivateID } from "../../Actions/SessionActions";
+import { setPrivateID, setSocket } from "../../Actions/SessionActions";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -40,11 +40,12 @@ export default function TrackItem(props) {
 
   const dispatch = useDispatch();
 
-  const { tracks, queue, privateId } = useSelector(state => ({
+  const { tracks, queue, privateId, socket } = useSelector(state => ({
     ...state.tracksReducer,
     ...state.queueTrackReducer,
     ...state.sessionReducer,
-    ...state.privateIdReducer
+    ...state.privateIdReducer,
+    ...state.socketReducer
   }));
 
   const queueTheTrack = e => {
@@ -57,7 +58,11 @@ export default function TrackItem(props) {
       duration: tracks[id].duration_ms,
       trackImage: tracks[id].album.images[0].url
     });
-    sendQueuePusher(queue, privateId);
+
+    //send socket data
+    socket.sendMessage(JSON.stringify(queue));
+
+    //queue the new track
     queueTrack(dispatch, queue);
   };
 
