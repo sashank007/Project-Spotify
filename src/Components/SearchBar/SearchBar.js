@@ -52,12 +52,18 @@ export default function SearchBar(props) {
 
   const onChangeInput = e => {
     console.log("search element : ", e.target.value);
+
     setSearchText(e.target.value);
     searchQuery(dispatch, searchText);
-    searchTracks(searchText, accessToken).then(res => {
-      console.log("search result: ", res);
-      setTracks(dispatch, res);
-    });
+
+    if (e.target.value === "" || e.target.value === null)
+      setTracks(dispatch, []);
+    else {
+      searchTracks(searchText, accessToken).then(res => {
+        console.log("search result: ", res);
+        setTracks(dispatch, res);
+      });
+    }
   };
 
   return (

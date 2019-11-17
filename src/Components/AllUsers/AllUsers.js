@@ -13,11 +13,9 @@ export default function AllUsers() {
     if (playingUsers) {
       console.log("playing users: ", playingUsers);
       return playingUsers.map((i, key) => (
-        <li key={i}>
-          <div>
-            <span>{playingUsers[key].userName}</span>
-            <span className="points-container">{playingUsers[key].points}</span>
-          </div>
+        <li className="user-item" key={key}>
+          <span>{playingUsers[key].userName}</span>
+          <span className="points-container">{playingUsers[key].points}</span>
         </li>
       ));
     }

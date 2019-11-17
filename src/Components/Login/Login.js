@@ -43,14 +43,14 @@ export default function Login() {
   };
 
   const handleUsers = (res, name, uid) => {
-    console.log(res);
+    console.log("handle users: ", res);
     let { users } = res;
     let currentUsers = [];
     let userIds = [];
     let points = [];
 
     users.map((i, key) => {
-      console.log(users[key]);
+      console.log("each user: ", users[key]);
       userIds.push(users[key].userId);
       points.push(users[key].points);
       currentUsers.push({
@@ -100,6 +100,7 @@ export default function Login() {
     getAllUsers(id)
       .then(res => res.json())
       .then(res => {
+        console.log("all users: ", res);
         handleUsers(res, userName, userId);
       });
   };

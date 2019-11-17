@@ -47,11 +47,20 @@
   font-family: "Luckiest Guy", cursive;
 }
 
+.user-item {
+  width: 100px;
+
+  margin-left: 1.5vw;
+
+  color: black;
+  font-family: monospace;
+}
 .users-list {
   list-style-type: none;
   left: 0;
+  padding: 0px;
   right: 0;
-  margin-left: 10px;
+  /* margin-left: 10px; */
   font-family: "Quicksand", sans-serif;
 }
 .points-container {
