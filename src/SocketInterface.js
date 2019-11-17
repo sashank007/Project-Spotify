@@ -12,8 +12,7 @@ class Socket {
     let io = this.socket;
     var self = this;
     io.onopen = function(e) {
-      alert("[open] Connection established");
-      //   self.sendMessage(`connection established...`);
+      self.sendMessage(`connection established...`);
     };
   };
 

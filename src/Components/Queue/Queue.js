@@ -2,8 +2,7 @@ import React, { Component, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { queueTrack, updateCurrentTrack } from "../../Actions/QueueActions";
 import { setSocket } from "../../Actions/SessionActions";
-import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
-import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
+
 import { playTrack } from "../../Middleware/playbackMiddleware";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";

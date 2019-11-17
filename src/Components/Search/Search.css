@@ -16,7 +16,7 @@
   width: 80vw;
   left: 20;
   height: 80vh;
-  /* overflow-y: scroll; */
+  overflow-y: scroll;
 }
 ul {
   list-style-type: none;

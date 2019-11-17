@@ -55,33 +55,44 @@ const Search = props => {
   }
 
   const onLoad = () => {
-    Pusher.logToConsole = true;
-    var pusher = new Pusher("a3ef4965765d2b7fea88", {
-      cluster: "us3",
-      forceTLS: false
-    });
-    var channel = pusher.subscribe("queue-channel");
-    channel.bind("queue-item", function(data) {
-      console.log("pusher added  with private id : ", data);
-      // sendQueuePusher(queue);
-      // let currentPrivateId = window.localStorage.getItem("privateId");
-      // if (data.privateId === currentPrivateId)
-      queueTrack(dispatch, data.queue);
-      // setQ(data.queue);
-    });
+    // Pusher.logToConsole = true;
+    // var pusher = new Pusher("a3ef4965765d2b7fea88", {
+    //   cluster: "us3",
+    //   forceTLS: false
+    // });
+    // var channel = pusher.subscribe("queue-channel");
+    // channel.bind("queue-item", function(data) {
+    //   console.log("pusher added  with private id : ", data);
+    //   // sendQueuePusher(queue);
+    //   // let currentPrivateId = window.localStorage.getItem("privateId");
+    //   // if (data.privateId === currentPrivateId)
+    //   queueTrack(dispatch, data.queue);
+    //   // setQ(data.queue);
+    // });
   };
 
   const getAllTracks = () => {
+    let totalTracks = [];
     if (tracks) {
-      console.log("get all tracks :", tracks);
-      return tracks.map((keyName, i) => (
-        <TrackItem
-          key={i}
-          id={i}
-          trackImage={tracks[i].album.images[0].url}
-          trackName={tracks[i].name}
-        />
-      ));
+      tracks.map((keyName, i) => {
+        let currentTrack = tracks[i];
+        if (
+          currentTrack.hasOwnProperty("album") &&
+          currentTrack.album.hasOwnProperty("images") &&
+          currentTrack.album.images.length > 0
+        ) {
+          let trackItem = (
+            <TrackItem
+              key={i}
+              id={i}
+              trackImage={tracks[i].album.images[0].url}
+              trackName={tracks[i].name}
+            />
+          );
+          totalTracks.push(trackItem);
+        }
+      });
+      return totalTracks;
     }
   };
 

@@ -51,10 +51,11 @@ export default function SearchBar(props) {
   const [searchText, setSearchText] = useState("");
 
   const onChangeInput = e => {
-    console.log("search element : ", e.target);
+    console.log("search element : ", e.target.value);
     setSearchText(e.target.value);
     searchQuery(dispatch, searchText);
     searchTracks(searchText, accessToken).then(res => {
+      console.log("search result: ", res);
       setTracks(dispatch, res);
     });
   };

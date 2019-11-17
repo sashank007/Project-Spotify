@@ -19,9 +19,9 @@ import { setPrivateID, setSocket } from "../../Actions/SessionActions";
 
 const useStyles = makeStyles(theme => ({
   root: {
-    width: "90%",
-    maxWidth: "90vw",
-    marginLeft: "5vw",
+    width: "70%",
+    maxWidth: "70vw",
+    marginLeft: "10vw",
     color: "#0000004a",
     display: "block",
     borderRadius: "5px",
