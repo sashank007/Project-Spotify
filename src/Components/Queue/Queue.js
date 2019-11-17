@@ -247,8 +247,8 @@ const Queue = (classes, props) => {
               fontSize: 8,
               position: "absolute",
               right: 0,
-              marginRight: "5px",
-              top: "5vh",
+              marginRight: "12px",
+              top: "10vh",
               color: "white"
             }}
             onClick={toggleDrawer("right", true)}

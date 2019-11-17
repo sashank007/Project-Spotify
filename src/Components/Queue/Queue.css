@@ -42,3 +42,6 @@ p {
   /* font-family: "Rajdhani", sans-serif; */
   font-family: "Luckiest Guy", cursive;
 }
+
+@media only screen and (max-width: 600px) {
+}
