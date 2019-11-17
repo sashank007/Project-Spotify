@@ -64,6 +64,9 @@ export default function TrackItem(props) {
 
     //queue the new track
     queueTrack(dispatch, queue);
+
+    //update db with current queue
+    sendQueuePusher(queue, privateId);
   };
 
   return (

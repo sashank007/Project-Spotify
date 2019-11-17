@@ -1,40 +1,32 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
-import { queueTrack, updateCurrentTrack } from "../../Actions/QueueActions";
-import { setSocket } from "../../Actions/SessionActions";
+import { Button } from "@material-ui/core";
+import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import Drawer from "@material-ui/core/Drawer";
-
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import { playTrack } from "../../Middleware/playbackMiddleware";
-import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
-import PlayArrowIcon from "@material-ui/icons/PlayArrow";
-import IconButton from "@material-ui/core/IconButton";
-
+import { sendQueuePusher, getQueue } from "../../Middleware/queueMiddleware";
 import {
   updateCurrentUser,
   getAllUsers
 } from "../../Middleware/userMiddleware";
 
-import Pusher from "pusher-js";
-import "./Queue.css";
-import { setAllUsers } from "../../Actions/UsersActions";
-import { Button } from "@material-ui/core";
 import UpIcon from "../Common/UpIcon";
 import DownIcon from "../Common/DownIcon";
-import Login from "../Login/Login";
-import { sendQueuePusher } from "../../Middleware/queueMiddleware";
+
+import { queueTrack, updateCurrentTrack } from "../../Actions/QueueActions";
+import { setSocket } from "../../Actions/SessionActions";
+import { setAllUsers } from "../../Actions/UsersActions";
 import { displayCurrentTrack } from "../../Actions/CurrentTrackActions";
 
 import Socket from "../../SocketInterface";
 import authHost from "../../config/app";
-
+import "./Queue.css";
 const SOCKET_URI = authHost.SOCKET;
 
 const Queue = (classes, props) => {
-  console.log("queue props: ", props);
-
   const { queue, accessToken, privateId, playingUsers, socket } = useSelector(
     state => ({
       ...state.queueTrackReducer,
@@ -45,15 +37,6 @@ const Queue = (classes, props) => {
     })
   );
 
-  const useStyles = makeStyles({
-    list: {
-      width: 250
-    },
-    fullList: {
-      width: "auto"
-    }
-  });
-
   const matches = useMediaQuery("(min-width:600px)");
 
   let timerId = null;
@@ -61,13 +44,11 @@ const Queue = (classes, props) => {
   const dispatch = useDispatch();
 
   const addToQueue = data => {
-    console.log("new data received: ", data);
-
     try {
       let updatedQueue = JSON.parse(data);
       queueTrack(dispatch, updatedQueue);
     } catch (e) {
-      console.log("parsed data and failed : ", data);
+      console.log("parsed data and failed : ", e);
     }
   };
 
@@ -85,7 +66,6 @@ const Queue = (classes, props) => {
   };
 
   useEffect(() => {
-    console.log("re rendering...");
     createSocketConn();
   }, []);
 
@@ -148,9 +128,7 @@ const Queue = (classes, props) => {
         });
 
       //remove the top track
-      console.log("before removing track: ", queue);
       queue.splice(0, 1);
-      console.log("removing track: ", queue);
 
       //update local queue and client pusher
       queueTrack(dispatch, queue);
@@ -160,6 +138,9 @@ const Queue = (classes, props) => {
 
       //display the current track in player
       displayCurrentTrack(dispatch, true);
+
+      //update db with current queue
+      sendQueuePusher(queue, privateId);
     }
   };
 
@@ -186,10 +167,18 @@ const Queue = (classes, props) => {
   const upVoteTrack = e => {
     let trackId = e.target.id;
     queue[trackId].score += 1;
+
+    //sort queue based on upvotes
     queue.sort((a, b) => b.score - a.score);
+
+    //queue the track locally
     queueTrack(dispatch, queue);
 
+    //update queue to all clients
     sendSocketData(queue);
+
+    //update db with current queue
+    sendQueuePusher(queue, privateId);
   };
 
   const downVoteTrack = e => {
@@ -203,6 +192,9 @@ const Queue = (classes, props) => {
 
     //send to all users on same session
     sendSocketData(queue);
+
+    //update db with current queue
+    sendQueuePusher(queue, privateId);
   };
 
   const getAllQueueItems = () => {

@@ -55,6 +55,20 @@ const performQueryUpdateUsers = async (privateId, userName, userId, points) => {
   };
 };
 
+const performQueryUpdateQueues = async (privateId, queue) => {
+  const queues = db.collection("queues");
+
+  const newQueue = {
+    privateId,
+    queue
+  };
+
+  return {
+    insertedQueue: newQueue,
+    mongoResult: await queues.insertOne(newQueue)
+  };
+};
+
 var generateRandomString = function(length) {
   var text = "";
   var possible =
@@ -225,6 +239,92 @@ app.post("/update_user", async function(req, res) {
     users.updateOne(query, newvalues, function(err, res) {
       if (err) throw err;
       console.log("1 document updated");
+    });
+    return;
+  } catch (e) {
+    res.send({
+      error: e.message
+    });
+    return;
+  }
+});
+
+app.post("/update_queue", async function(req, res) {
+  var id = req.body.privateId;
+  var queue = req.body.queue;
+
+  if (!client.isConnected()) {
+    // Cold start or connection timed out. Create new connection.
+    try {
+      await createConn();
+    } catch (e) {
+      res.json({
+        error: e.message
+      });
+      return;
+    }
+  }
+
+  // Connection ready. Perform insert and return result.
+  try {
+    const queues = db.collection("queues");
+    const query = { privateId: id };
+
+    //set new value
+    var newvalues = { $set: { queue: queue } };
+
+    //check if there is existing queue
+    queues.find(query).toArray(async (err, result) => {
+      if (result.length > 0) {
+        //update the queue
+        queues.updateOne(query, newvalues, function(err, res) {
+          if (err) throw err;
+        });
+      } else {
+        //create new queue
+        res.json(await performQueryUpdateQueues(id, queue));
+      }
+      res.send({
+        search_id: id,
+        queues: result
+      });
+    });
+
+    //update one
+
+    return;
+  } catch (e) {
+    res.send({
+      error: e.message
+    });
+    return;
+  }
+});
+
+app.post("/get_queue", async function(req, res) {
+  var id = req.body.privateId;
+  if (!client.isConnected()) {
+    // Cold start or connection timed out. Create new connection.
+    try {
+      await createConn();
+    } catch (e) {
+      res.json({
+        error: e.message
+      });
+      return;
+    }
+  }
+
+  // Connection ready. Perform insert and return result.
+  try {
+    const queues = db.collection("queues");
+    const query = { privateId: id };
+    queues.find(query).toArray((err, result) => {
+      console.log("result for queues: ", result);
+      res.send({
+        search_id: id,
+        queues: result
+      });
     });
     return;
   } catch (e) {

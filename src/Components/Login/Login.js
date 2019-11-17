@@ -8,12 +8,10 @@ import authHost from "../../config/app";
 import { addNewUser, getAllUsers } from "../../Middleware/userMiddleware";
 import { setAllUsers } from "../../Actions/UsersActions";
 import "./Login.css";
-import Socket from "../../SocketInterface";
+import { getQueue } from "../../Middleware/queueMiddleware";
+import { queueTrack } from "../../Actions/QueueActions";
 
 const BACKEND_URI = authHost.HOST;
-const SOCKET_URI = authHost.SOCKET;
-
-console.log("setting backend uri : ", BACKEND_URI);
 
 export default function Login() {
   const spotifyLogin = () => {
@@ -102,6 +100,15 @@ export default function Login() {
       .then(res => {
         console.log("all users: ", res);
         handleUsers(res, userName, userId);
+      });
+
+    //get queue if already existing with privateID
+    getQueue(id)
+      .then(res => res.json())
+      .then(data => {
+        console.log("queue data: ", data);
+        let { queue } = data.queues[0];
+        queueTrack(dispatch, queue);
       });
   };
 

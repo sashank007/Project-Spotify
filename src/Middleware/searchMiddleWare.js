@@ -1,8 +1,6 @@
 import fetch from "isomorphic-unfetch";
 import { setTracks } from "../Actions/SearchActions";
 import { useDispatch, useSelector } from "react-redux";
-// import { SEARCH_TRACKS } from "../constants/ActionTypes";
-// import { searchTracksSuccess } from "../actions/searchActions";
 
 const SPOTIFY_API_BASE = "https://api.spotify.com/v1";
 

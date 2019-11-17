@@ -12,22 +12,12 @@ import authHost from "../../config/app";
 const SOCKET_URI = authHost.SOCKET;
 
 export default function MiddleComponent() {
-  const [socket, setSocket] = useState();
-
-  const createSocketConn = () => {
-    let socket = new Socket(SOCKET_URI);
-
-    //create a new socket connection
-    socket.createConnection();
-    setSocket(socket);
-  };
-
   return (
     <div>
       <Search />
       <Login />
       <CurrentTrack />
-      <Queue socket={socket} />
+      <Queue />
       <AllUsers />
       <IDInput />
     </div>

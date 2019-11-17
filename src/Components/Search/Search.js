@@ -12,7 +12,7 @@ import { sendQueuePusher } from "../../Middleware/queueMiddleware";
 import { setPrivateID } from "../../Actions/SessionActions";
 import SearchBar from "../SearchBar/SearchBar";
 import "./Search.css";
-import Pusher from "pusher-js";
+
 const Search = props => {
   const { tracks, queue, accessToken, privateId, socket } = useSelector(
     state => ({
