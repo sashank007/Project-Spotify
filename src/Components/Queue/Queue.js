@@ -1,7 +1,11 @@
 import React, { Component, useEffect, useState } from "react";
+import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import { queueTrack, updateCurrentTrack } from "../../Actions/QueueActions";
 import { setSocket } from "../../Actions/SessionActions";
+import Drawer from "@material-ui/core/Drawer";
+
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import { playTrack } from "../../Middleware/playbackMiddleware";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
@@ -41,6 +45,17 @@ const Queue = (classes, props) => {
     })
   );
 
+  const useStyles = makeStyles({
+    list: {
+      width: 250
+    },
+    fullList: {
+      width: "auto"
+    }
+  });
+
+  const matches = useMediaQuery("(min-width:600px)");
+
   let timerId = null;
 
   const dispatch = useDispatch();
@@ -73,6 +88,24 @@ const Queue = (classes, props) => {
     console.log("re rendering...");
     createSocketConn();
   }, []);
+
+  const [state, setState] = React.useState({
+    top: false,
+    left: false,
+    bottom: false,
+    right: false
+  });
+
+  const toggleDrawer = (side, open) => event => {
+    if (
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
+      return;
+    }
+
+    setState({ ...state, [side]: open });
+  };
 
   const playNextTrack = () => {
     console.log("current timer : ", timerId);
@@ -189,21 +222,53 @@ const Queue = (classes, props) => {
   };
 
   return (
-    <div className="Queue-Container">
-      <p>YOUR QUEUE</p>
-      <ul>{getAllQueueItems()}</ul>
-      <Button
-        variant="contained"
-        className={classes.button}
-        style={{
-          backgroundColor: "#fff",
-          fontFamily: "'Luckiest Guy', cursive"
-        }}
-        onClick={playNextTrack}
-        startIcon={<PlayArrowIcon />}
-      >
-        Play
-      </Button>
+    <div>
+      {matches ? (
+        <div className="Queue-Container">
+          <p>YOUR QUEUE</p>
+          <ul>{getAllQueueItems()}</ul>
+          <Button
+            variant="contained"
+            className={classes.button}
+            style={{
+              backgroundColor: "#fff",
+              fontFamily: "'Luckiest Guy', cursive"
+            }}
+            onClick={playNextTrack}
+            startIcon={<PlayArrowIcon />}
+          >
+            Play
+          </Button>
+        </div>
+      ) : (
+        <div>
+          <Button
+            style={{
+              fontSize: 8,
+              position: "absolute",
+              right: 0,
+              marginRight: "5px",
+              top: "5vh",
+              color: "white"
+            }}
+            onClick={toggleDrawer("right", true)}
+            variant="outlined"
+          >
+            Queue
+          </Button>
+          <Drawer
+            style={{ width: 250 }}
+            anchor="right"
+            open={state.right}
+            onClose={toggleDrawer("right", false)}
+          >
+            <div style={{ width: 250 }}>
+              <p style={{ marginLeft: 20 }}>YOUR QUEUE</p>
+              <ul>{getAllQueueItems()}</ul>
+            </div>
+          </Drawer>
+        </div>
+      )}
     </div>
   );
 };

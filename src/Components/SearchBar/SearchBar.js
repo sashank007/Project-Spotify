@@ -8,36 +8,64 @@ import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
 import DirectionsIcon from "@material-ui/icons/Directions";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import { searchTracks } from "../../Middleware/searchMiddleWare";
 import { setTracks, searchQuery } from "../../Actions/SearchActions";
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    padding: "2px 4px",
-    display: "flex",
-    alignItems: "center",
-    width: 800,
-    overflowX: "none",
-    marginLeft: "15vw",
-    marginTop: "15px"
-  },
-  input: {
-    marginLeft: theme.spacing(1),
-    fontFamily: "sans-serif",
-    color: "#b3b3b3",
-    flex: 1
-  },
-  iconButton: {
-    padding: 10
-  },
-  divider: {
-    height: 28,
-    margin: 4
-  }
-}));
-
 export default function SearchBar(props) {
+  const matches = useMediaQuery("(min-width:600px)");
+
+  const useStyles = matches
+    ? makeStyles(theme => ({
+        root: {
+          padding: "2px 4px",
+          display: "flex",
+          alignItems: "center",
+          width: 800,
+          overflowX: "none",
+          marginLeft: "15vw",
+          marginTop: "15px"
+        },
+        input: {
+          marginLeft: theme.spacing(1),
+          fontFamily: "sans-serif",
+          color: "#b3b3b3",
+          flex: 1
+        },
+        iconButton: {
+          padding: 10
+        },
+        divider: {
+          height: 28,
+          margin: 4
+        }
+      }))
+    : makeStyles(theme => ({
+        root: {
+          padding: "2px 4px",
+          display: "flex",
+          alignItems: "center",
+          width: 240,
+          overflowX: "none",
+          marginLeft: "15vw",
+          marginTop: "15px"
+        },
+        input: {
+          marginLeft: theme.spacing(1),
+          fontFamily: "sans-serif",
+          color: "#b3b3b3",
+          flex: 1
+        },
+        iconButton: {
+          padding: 10
+        },
+        divider: {
+          height: 28,
+          margin: 4
+        }
+      }));
+
   const { tracks, queue, accessToken, privateId } = useSelector(state => ({
     ...state.tracksReducer,
     ...state.queueTrackReducer,
