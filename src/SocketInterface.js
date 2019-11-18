@@ -27,8 +27,6 @@ class Socket {
 
   onMessageReceived(callback) {
     this.socket.onmessage = function(event) {
-      //   alert(`[message] Data received from server: ${event.data}`);
-      console.log("event data: ", event.data);
       callback(event.data);
     };
   }

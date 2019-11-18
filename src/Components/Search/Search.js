@@ -27,7 +27,6 @@ const Search = props => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    onLoad();
     // let privateId = getUrlParameter("id");
     // if (privateId) {
     //   setPrivateID(dispatch, privateId);
@@ -53,23 +52,6 @@ const Search = props => {
       ? ""
       : decodeURIComponent(results[1].replace(/\+/g, " "));
   }
-
-  const onLoad = () => {
-    // Pusher.logToConsole = true;
-    // var pusher = new Pusher("a3ef4965765d2b7fea88", {
-    //   cluster: "us3",
-    //   forceTLS: false
-    // });
-    // var channel = pusher.subscribe("queue-channel");
-    // channel.bind("queue-item", function(data) {
-    //   console.log("pusher added  with private id : ", data);
-    //   // sendQueuePusher(queue);
-    //   // let currentPrivateId = window.localStorage.getItem("privateId");
-    //   // if (data.privateId === currentPrivateId)
-    //   queueTrack(dispatch, data.queue);
-    //   // setQ(data.queue);
-    // });
-  };
 
   const getAllTracks = () => {
     let totalTracks = [];

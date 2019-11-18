@@ -87,6 +87,16 @@ const Queue = (classes, props) => {
     setState({ ...state, [side]: open });
   };
 
+  const updateQueue = queue => {
+    //queue the new track
+    queueTrack(dispatch, queue);
+
+    //send to all users on same session
+    sendSocketData(queue);
+
+    //update db with current queue
+    sendQueuePusher(queue, privateId);
+  };
   const playNextTrack = () => {
     console.log("current timer : ", timerId);
     console.log("play next track queue : ", queue);
@@ -109,16 +119,28 @@ const Queue = (classes, props) => {
       timerId = setTimeout(playNextTrack, duration);
 
       //play the current track
-      playTrack(queue[0].trackId, "", accessToken);
+      playTrack(queue[0].trackId, "", accessToken)
+        .then(res => res.json())
+        .then(data => {
+          if (data.hasOwnProperty("error"))
+            alert("Please open a spotify web player");
+          else {
+            //remove the top track
+            queue.splice(0, 1);
 
-      //reduce user points
-      console.log("playing users: ", playingUsers);
+            //display the current track in player
+            displayCurrentTrack(dispatch, true);
 
-      updateCurrentUser(
-        privateId,
-        "r8ggyba4l1r5gxxrjrubv0y6u",
-        playingUsers[0].points - 1
-      );
+            //update current queue and to all clients
+            updateQueue(queue);
+          }
+        });
+
+      // updateCurrentUser(
+      //   privateId,
+      //   "r8ggyba4l1r5gxxrjrubv0y6u",
+      //   playingUsers[0].points - 1
+      // );
 
       //fetch all users again
       getAllUsers(privateId)
@@ -126,33 +148,16 @@ const Queue = (classes, props) => {
         .then(res => {
           handleUsers(res);
         });
-
-      //remove the top track
-      queue.splice(0, 1);
-
-      //update local queue and client pusher
-      queueTrack(dispatch, queue);
-
-      //update to all users
-      sendSocketData(queue);
-
-      //display the current track in player
-      displayCurrentTrack(dispatch, true);
-
-      //update db with current queue
-      sendQueuePusher(queue, privateId);
     }
   };
 
   const handleUsers = (res, name, uid) => {
-    console.log(res);
     let { users } = res;
     let currentUsers = [];
     let userIds = [];
     let points = [];
 
     users.map((i, key) => {
-      console.log(users[key]);
       userIds.push(users[key].userId);
       points.push(users[key].points);
       currentUsers.push({
@@ -171,14 +176,8 @@ const Queue = (classes, props) => {
     //sort queue based on upvotes
     queue.sort((a, b) => b.score - a.score);
 
-    //queue the track locally
-    queueTrack(dispatch, queue);
-
-    //update queue to all clients
-    sendSocketData(queue);
-
-    //update db with current queue
-    sendQueuePusher(queue, privateId);
+    //update current queue and to all clients
+    updateQueue(queue);
   };
 
   const downVoteTrack = e => {
@@ -187,17 +186,11 @@ const Queue = (classes, props) => {
     queue[trackId].score -= 1;
     queue.sort((a, b) => b.score - a.score);
 
-    //queue the new track
-    queueTrack(dispatch, queue);
-
-    //send to all users on same session
-    sendSocketData(queue);
-
-    //update db with current queue
-    sendQueuePusher(queue, privateId);
+    //update current queue and to all clients
+    updateQueue(queue);
   };
 
-  const getAllQueueItems = () => {
+  const QueueItems = () => {
     let queuedTracks = queue;
     if (queuedTracks) {
       return queuedTracks.map((key, i) => (
@@ -218,7 +211,9 @@ const Queue = (classes, props) => {
       {matches ? (
         <div className="Queue-Container">
           <p>YOUR QUEUE</p>
-          <ul>{getAllQueueItems()}</ul>
+          <ul>
+            <QueueItems />
+          </ul>
           <Button
             variant="contained"
             className={classes.button}
@@ -256,7 +251,9 @@ const Queue = (classes, props) => {
           >
             <div style={{ width: 250 }}>
               <p style={{ marginLeft: 20 }}>YOUR QUEUE</p>
-              <ul>{getAllQueueItems()}</ul>
+              <ul>
+                <QueueItems />
+              </ul>
             </div>
           </Drawer>
         </div>

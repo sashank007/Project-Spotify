@@ -3,8 +3,7 @@ import fetch from "isomorphic-unfetch";
 const SPOTIFY_API_BASE = "https://api.spotify.com/v1";
 
 export const playTrack = (trackId, device_id, token) => {
-  console.log(trackId);
-  fetch(`${SPOTIFY_API_BASE}/me/player/play`, {
+  return fetch(`${SPOTIFY_API_BASE}/me/player/play`, {
     method: "PUT",
     headers: {
       Authorization: `Bearer ${token}`
@@ -12,7 +11,5 @@ export const playTrack = (trackId, device_id, token) => {
     body: JSON.stringify({
       uris: [`${trackId}`]
     })
-  }).then(res => {
-    console.log("playback response: ", res);
   });
 };

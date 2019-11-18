@@ -36,8 +36,6 @@ function App() {
 
   useEffect(() => {
     onLoad();
-    // callBackendAPI();
-    // .then(res => console.log("response for login:", res));
   }, []);
 
   // function to get a query param's value

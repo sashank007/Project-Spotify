@@ -64,7 +64,7 @@ export default function SearchBar(props) {
         }
       }));
 
-  const { tracks, queue, accessToken, privateId } = useSelector(state => ({
+  const { accessToken } = useSelector(state => ({
     ...state.tracksReducer,
     ...state.queueTrackReducer,
     ...state.sessionReducer,
@@ -77,8 +77,6 @@ export default function SearchBar(props) {
   const [searchText, setSearchText] = useState("");
 
   const onChangeInput = e => {
-    console.log("search element : ", e.target.value);
-
     setSearchText(e.target.value);
     searchQuery(dispatch, searchText);
 
@@ -86,7 +84,6 @@ export default function SearchBar(props) {
       setTracks(dispatch, []);
     else {
       searchTracks(searchText, accessToken).then(res => {
-        console.log("search result: ", res);
         setTracks(dispatch, res);
       });
     }

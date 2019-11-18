@@ -11,7 +11,6 @@ export default function AllUsers() {
 
   const getAllUsers = () => {
     if (playingUsers) {
-      console.log("playing users: ", playingUsers);
       return playingUsers.map((i, key) => (
         <li className="user-item" key={key}>
           <span>{playingUsers[key].userName}</span>

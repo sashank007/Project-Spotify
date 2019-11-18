@@ -6,7 +6,6 @@ const WEBSOCKET_ACTION_SEND = authHost.ACTION_SEND;
 // const BACKEND_URI = "http://localhost:5000"
 
 export const sendQueuePusher = (queue, privateId) => {
-  // socket.sendMessage(queue);
   fetch(BACKEND_URI + "/update_queue", {
     method: "POST",
     headers: new Headers({
@@ -22,7 +21,6 @@ export const sendQueuePusher = (queue, privateId) => {
 };
 
 export const getQueue = privateId => {
-  console.log("Private id for getQueue: ", privateId);
   return fetch(BACKEND_URI + "/get_queue", {
     method: "post",
     headers: new Headers({

@@ -20,7 +20,6 @@ router.post("/", (req, res) => {
           reject(err);
         }
         resolve(res);
-        console.log("reslved: ", res);
       });
     });
   };

@@ -28,27 +28,23 @@ export default function Login() {
   const dispatch = useDispatch();
 
   const callMe = token => {
-    console.log("access token: ", token);
     fetch("https://api.spotify.com/v1/me", {
       headers: { Authorization: "Bearer " + token }
     })
       .then(response => response.json())
       .then(data => {
-        console.log("me data : ", data);
         setUserName(data.display_name);
         hasLoggedIn(data.display_name, data.id);
       });
   };
 
   const handleUsers = (res, name, uid) => {
-    console.log("handle users: ", res);
     let { users } = res;
     let currentUsers = [];
     let userIds = [];
     let points = [];
 
     users.map((i, key) => {
-      console.log("each user: ", users[key]);
       userIds.push(users[key].userId);
       points.push(users[key].points);
       currentUsers.push({
@@ -59,7 +55,6 @@ export default function Login() {
     });
 
     if (userIds.indexOf(uid) < 0) {
-      console.log("user not in list ..");
       addTheNewUser(name, uid);
       currentUsers.push({ userName: name });
     }
@@ -98,7 +93,6 @@ export default function Login() {
     getAllUsers(id)
       .then(res => res.json())
       .then(res => {
-        console.log("all users: ", res);
         handleUsers(res, userName, userId);
       });
 
@@ -106,9 +100,10 @@ export default function Login() {
     getQueue(id)
       .then(res => res.json())
       .then(data => {
-        console.log("queue data: ", data);
-        let { queue } = data.queues[0];
-        queueTrack(dispatch, queue);
+        if (data.hasOwnProperty("queues") && data.queues.length > 0) {
+          let { queue } = data.queues[0];
+          queueTrack(dispatch, queue);
+        }
       });
   };
 
