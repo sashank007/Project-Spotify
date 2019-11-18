@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "@material-ui/core";
 import queryString from "query-string";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+
 import { setSessionToken, setPrivateID } from "../../Actions/SessionActions";
 import authHost from "../../config/app";
 import { addNewUser, getAllUsers } from "../../Middleware/userMiddleware";
@@ -21,6 +23,8 @@ export default function Login() {
     ...state.sessionReducer,
     ...state.privateIdReducer
   }));
+
+  const matches = useMediaQuery("(min-width:600px)");
 
   const [userName, setUserName] = useState("");
   const [privateId, setPrivateId] = useState("");
@@ -136,10 +140,19 @@ export default function Login() {
     <div className="Login-Container">
       {accessToken === "" ? (
         <Button
-          style={{
-            fontFamily: "'Rajdhani', sans-serif",
-            marginTop: "5px"
-          }}
+          style={
+            matches
+              ? {
+                  fontFamily: "'Rajdhani', sans-serif",
+                  marginTop: "5px",
+                  color: "black"
+                }
+              : {
+                  fontFamily: "'Rajdhani', sans-serif",
+                  marginTop: "5px",
+                  color: "white"
+                }
+          }
           onClick={spotifyLogin}
           component="span"
           variant="outlined"

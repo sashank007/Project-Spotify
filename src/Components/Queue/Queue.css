@@ -26,7 +26,8 @@
 
   /* border-left: 0.8px solid rgb(235, 211, 211); */
   background-color: white;
-  color: #5a55558a;
+  /* color: #5a55558a; */
+  color: black;
   height: 100vh;
 }
 ul {
@@ -35,9 +36,13 @@ ul {
   font-family: "Quicksand", sans-serif;
 }
 
+.score {
+  color: gray;
+}
 p {
   font-size: 32px;
   color: #0000008a;
+
   /* font-family: "Alegreya", serif; */
   /* font-family: "Rajdhani", sans-serif; */
   font-family: "Luckiest Guy", cursive;

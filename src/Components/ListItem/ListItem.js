@@ -9,24 +9,22 @@ import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
 
 import { useDispatch, useSelector } from "react-redux";
-import { setTracks, searchQuery } from "../../Actions/SearchActions";
-import { searchTracks } from "../../Middleware/searchMiddleWare";
+
 import { queueTrack } from "../../Actions/QueueActions";
 import AlignItemsList from "./ListItem";
 import CurrentTrack from "../CurrentTrack/CurrentTrack";
 import { sendQueuePusher } from "../../Middleware/queueMiddleware";
-import { setPrivateID, setSocket } from "../../Actions/SessionActions";
 
 const useStyles = makeStyles(theme => ({
   root: {
     width: "70%",
     maxWidth: "70vw",
-    marginLeft: "10vw",
+    marginLeft: "15vw",
     color: "#0000004a",
     display: "block",
     borderRadius: "5px",
     backgroundColor: "#fff",
-    border: "0.4px solid white",
+    border: "0.4px solid black",
     fontFamily: "'PT Sans Narrow', sans-serif"
   },
   inline: {
@@ -49,8 +47,6 @@ export default function TrackItem(props) {
   }));
 
   const queueTheTrack = e => {
-    console.log("queue the track:", trackName);
-    console.log("queue...", queue);
     queue.push({
       name: trackName,
       trackId: tracks[id].uri,

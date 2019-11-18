@@ -199,7 +199,7 @@ const Queue = (classes, props) => {
             <span>{queuedTracks[i].name}</span>
             <UpIcon id={i} click={upVoteTrack} />
             <DownIcon id={i} click={downVoteTrack} />
-            <span>{queuedTracks[i].score}</span>
+            <span className="score">{queuedTracks[i].score}</span>
           </div>
         </li>
       ));
@@ -210,7 +210,7 @@ const Queue = (classes, props) => {
     <div>
       {matches ? (
         <div className="Queue-Container">
-          <p>YOUR QUEUE</p>
+          <p style={{ marginTop: "8vh" }}>YOUR QUEUE</p>
           <ul>
             <QueueItems />
           </ul>
@@ -232,6 +232,7 @@ const Queue = (classes, props) => {
           <Button
             style={{
               fontSize: 8,
+              fontFamily: "'Rajdhani', sans-serif",
               position: "absolute",
               right: 0,
               marginRight: "12px",
@@ -250,11 +251,25 @@ const Queue = (classes, props) => {
             onClose={toggleDrawer("right", false)}
           >
             <div style={{ width: 250 }}>
-              <p style={{ marginLeft: 20 }}>YOUR QUEUE</p>
+              <p style={{ marginLeft: 20, marginTop: "10vh" }}>YOUR QUEUE</p>
               <ul>
                 <QueueItems />
               </ul>
             </div>
+            <Button
+              variant="contained"
+              className={classes.button}
+              style={{
+                backgroundColor: "#fff",
+                width: "100px",
+                marginLeft: "10%",
+                fontFamily: "'Luckiest Guy', cursive"
+              }}
+              onClick={playNextTrack}
+              startIcon={<PlayArrowIcon />}
+            >
+              Play
+            </Button>
           </Drawer>
         </div>
       )}
