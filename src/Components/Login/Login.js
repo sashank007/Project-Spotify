@@ -5,13 +5,15 @@ import { Button } from "@material-ui/core";
 import queryString from "query-string";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
-import { setSessionToken, setPrivateID } from "../../Actions/SessionActions";
-import authHost from "../../config/app";
-import { addNewUser, getAllUsers } from "../../Middleware/userMiddleware";
 import { setAllUsers } from "../../Actions/UsersActions";
-import "./Login.css";
-import { getQueue } from "../../Middleware/queueMiddleware";
+import { setSessionToken, setPrivateID } from "../../Actions/SessionActions";
 import { queueTrack } from "../../Actions/QueueActions";
+
+import { addNewUser, getAllUsers } from "../../Middleware/userMiddleware";
+import { getQueue } from "../../Middleware/queueMiddleware";
+
+import "./Login.css";
+import authHost from "../../config/app";
 
 const BACKEND_URI = authHost.HOST;
 

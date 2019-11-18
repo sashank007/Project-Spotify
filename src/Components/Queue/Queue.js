@@ -13,6 +13,8 @@ import {
   getAllUsers
 } from "../../Middleware/userMiddleware";
 
+import { IsJsonString } from "../../utils";
+
 import UpIcon from "../Common/UpIcon";
 import DownIcon from "../Common/DownIcon";
 
@@ -45,10 +47,12 @@ const Queue = (classes, props) => {
 
   const addToQueue = data => {
     try {
-      let updatedQueue = JSON.parse(data);
-      queueTrack(dispatch, updatedQueue);
+      if (IsJsonString(data)) {
+        let updatedQueue = JSON.parse(data);
+        queueTrack(dispatch, updatedQueue);
+      }
     } catch (e) {
-      console.log("parsed data and failed : ", e);
+      throw e;
     }
   };
 
@@ -98,9 +102,6 @@ const Queue = (classes, props) => {
     sendQueuePusher(queue, privateId);
   };
   const playNextTrack = () => {
-    console.log("current timer : ", timerId);
-    console.log("play next track queue : ", queue);
-
     //check if queue is not empty
     if (queue.length > 0) {
       if (timerId) clearTimeout(timerId);
@@ -115,7 +116,7 @@ const Queue = (classes, props) => {
 
       //set duration for timer
       let duration = queue[0].duration;
-      console.log("track duration:", duration);
+
       timerId = setTimeout(playNextTrack, duration);
 
       //play the current track
