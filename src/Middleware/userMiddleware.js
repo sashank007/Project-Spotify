@@ -20,7 +20,7 @@ export const addNewUser = (privateId, userName, userId, points) => {
 };
 
 export const getAllUsers = privateId => {
-  return fetch(BACKEND_URI + "/get_user_id", {
+  return fetch(BACKEND_URI + "/get_all_users", {
     method: "post",
     headers: new Headers({
       "content-type": "application/json"

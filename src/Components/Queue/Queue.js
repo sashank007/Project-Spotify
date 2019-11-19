@@ -23,9 +23,11 @@ import { setSocket } from "../../Actions/SessionActions";
 import { setAllUsers } from "../../Actions/UsersActions";
 import { displayCurrentTrack } from "../../Actions/CurrentTrackActions";
 
-import Socket from "../../SocketInterface";
+import Socket from "../../Interface/SocketInterface";
 import authHost from "../../config/app";
 import "./Queue.css";
+import { updatePoints, getUserPoints } from "../../Middleware/pointsMiddleware";
+import Player from "../../Interface/PointsInterface";
 const SOCKET_URI = authHost.SOCKET;
 
 const Queue = (classes, props) => {
@@ -101,6 +103,43 @@ const Queue = (classes, props) => {
     //update db with current queue
     sendQueuePusher(queue, privateId);
   };
+
+  const vote = () => {
+    let privateId = window.localStorage.getItem("privateId");
+    let currentUserId = window.localStorage.getItem("currentUserId");
+    let player = new Player(privateId, currentUserId);
+    player
+      .vote()
+      .then(res => res.json())
+      .then(data => {
+        console.log("points data for indiv user: ", data);
+        if (data.users.length > 0) {
+          let { points } = data.users[0];
+          points = points - 1;
+          updatePoints(privateId, currentUserId, points)
+            .then(res => res.json())
+            .then(d => {
+              if (d.status === 200) {
+                getAllUsers(privateId)
+                  .then(res => res.json())
+                  .then(res => {
+                    handleUsers(res);
+                  });
+                console.log("succesfully updated points...");
+              }
+            });
+        }
+        //check if points have exceeded
+        // updatePoints(privateId,currentUserId,)
+      });
+  };
+
+  const _parseJSON = response => {
+    return response.text().then(function(text) {
+      return text ? JSON.parse(text) : {};
+    });
+  };
+
   const playNextTrack = () => {
     //check if queue is not empty
     if (queue.length > 0) {
@@ -119,29 +158,19 @@ const Queue = (classes, props) => {
 
       timerId = setTimeout(playNextTrack, duration);
 
-      //play the current track
-      playTrack(queue[0].trackId, "", accessToken)
-        .then(res => res.json())
-        .then(data => {
-          if (data.hasOwnProperty("error"))
-            alert("Please open a spotify web player");
-          else {
-            //remove the top track
-            queue.splice(0, 1);
+      //play the track on top of queue
+      playTrack(queue[0].trackId, "", accessToken).then(res => {
+        if (res.status === 200 || res.status === 204) {
+          //remove the top track
+          queue.splice(0, 1);
 
-            //display the current track in player
-            displayCurrentTrack(dispatch, true);
+          //display the current track in player
+          displayCurrentTrack(dispatch, true);
 
-            //update current queue and to all clients
-            updateQueue(queue);
-          }
-        });
-
-      // updateCurrentUser(
-      //   privateId,
-      //   "r8ggyba4l1r5gxxrjrubv0y6u",
-      //   playingUsers[0].points - 1
-      // );
+          //update current queue and to all clients
+          updateQueue(queue);
+        } else alert("Please make sure a spotify web player is active");
+      });
 
       //fetch all users again
       getAllUsers(privateId)
@@ -179,6 +208,9 @@ const Queue = (classes, props) => {
 
     //update current queue and to all clients
     updateQueue(queue);
+
+    //update points
+    vote();
   };
 
   const downVoteTrack = e => {
@@ -189,6 +221,9 @@ const Queue = (classes, props) => {
 
     //update current queue and to all clients
     updateQueue(queue);
+
+    //update points
+    vote();
   };
 
   const QueueItems = () => {

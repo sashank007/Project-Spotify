@@ -1,4 +1,4 @@
-import authHost from "./config/app";
+import authHost from "../config/app";
 
 class Socket {
   constructor(socketUri) {

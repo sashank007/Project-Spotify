@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function TrackItem(props) {
   const classes = useStyles();
-  let { trackName, trackImage, click, id } = props;
+  let { trackName, trackImage, id } = props;
 
   const dispatch = useDispatch();
 

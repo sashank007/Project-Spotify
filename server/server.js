@@ -177,7 +177,7 @@ app.get("/login", function(req, res) {
   );
 });
 
-app.post("/get_user_id", async function(req, res) {
+app.post("/get_all_users", async function(req, res) {
   var id = req.body.privateId;
   if (!client.isConnected()) {
     // Cold start or connection timed out. Create new connection.
@@ -211,8 +211,47 @@ app.post("/get_user_id", async function(req, res) {
   }
 });
 
+//get individual users
+
+app.post("/get_user_by_id", async function(req, res) {
+  let privateId = req.body.privateId;
+  var userId = req.body.playerId;
+  console.log("body for get user: ", req.body);
+  if (!client.isConnected()) {
+    // Cold start or connection timed out. Create new connection.
+    try {
+      await createConn();
+    } catch (e) {
+      res.json({
+        error: e.message
+      });
+      return;
+    }
+  }
+
+  // Connection ready. Perform insert and return result.
+  try {
+    const users = db.collection("users");
+    const query = { userId: userId, privateId: privateId };
+    console.log("query for points: ", query);
+    users.find(query).toArray((err, result) => {
+      console.log("points data for indiv user : ", result);
+      res.send({
+        search_id: privateId,
+        users: result
+      });
+    });
+    return;
+  } catch (e) {
+    res.send({
+      error: e.message
+    });
+    return;
+  }
+});
+
 app.post("/update_user", async function(req, res) {
-  var id = req.body.privateId;
+  var privateId = req.body.privateId;
   var userId = req.body.userId;
   var new_points = req.body.points;
   if (!client.isConnected()) {
@@ -230,7 +269,7 @@ app.post("/update_user", async function(req, res) {
   // Connection ready. Perform insert and return result.
   try {
     const users = db.collection("users");
-    const query = { privateId: id, userId: userId };
+    const query = { privateId: privateId, userId: userId };
 
     //set new value
     var newvalues = { $set: { points: parseInt(new_points) } };
@@ -240,7 +279,7 @@ app.post("/update_user", async function(req, res) {
       if (err) throw err;
       console.log("1 document updated");
     });
-    return;
+    res.send({ status: 200, message: "Succesfully updated" });
   } catch (e) {
     res.send({
       error: e.message

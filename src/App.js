@@ -1,29 +1,12 @@
 /* eslint-disable no-restricted-globals */
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import logo from "./logo.svg";
-import Search from "./Components/Search/Search";
 import { Provider } from "react-redux";
 import store from "./store";
 import "./App.css";
-import CurrentTrack from "./Components/CurrentTrack/CurrentTrack";
-import Pusher from "pusher-js";
-import Login from "./Components/Login/Login";
-import Queue from "./Components/Queue/Queue";
-import IDInput from "./Components/IDInput/IDInput";
-import AllUsers from "./Components/AllUsers/AllUsers";
-
-import Socket from "./SocketInterface";
-import authHost from "./config/app";
 import MiddleComponent from "./Components/MiddleComponent/MiddleComponent";
-
-const SOCKET_URI = authHost.SOCKET;
 
 function App() {
   const [privateId, setPrivateId] = useState();
-  const [q, setQ] = useState({});
-
-  let socket = new Socket(SOCKET_URI);
 
   function getUniqueId() {
     return (
@@ -47,11 +30,6 @@ function App() {
       ? ""
       : decodeURIComponent(results[1].replace(/\+/g, " "));
   }
-
-  const createSocketConn = () => {
-    //create a new socket connection
-    socket.createConnection();
-  };
 
   const onLoad = () => {
     var id = window.localStorage.getItem("privateId");

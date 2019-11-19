@@ -28,10 +28,6 @@ router.post("/", (req, res) => {
     return await asyncTrigger(msg);
   };
 
-  // pusher
-  //   .trigger("queue-channel", "queue-item", { queue: "test" })
-  //   .then(res => console.log(res));
-
   pushNotification({ queue: req.body.queue, privateId: req.body.privateId });
   // channels_client.trigger("queue-channel", "queue-item", {
   //   queue: req.body.queue,

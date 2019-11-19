@@ -95,6 +95,7 @@ export default function Login() {
 
   const hasLoggedIn = (userName, userId) => {
     let id = window.localStorage.getItem("privateId");
+    window.localStorage.setItem("currentUserId", userId);
     setPrivateId(id);
     getAllUsers(id)
       .then(res => res.json())
