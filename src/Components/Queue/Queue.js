@@ -39,7 +39,7 @@ const Queue = (classes, props) => {
     queue,
     accessToken,
     privateId,
-    playingUsers,
+
     isMaster,
     socket
   } = useSelector(state => ({
@@ -53,7 +53,7 @@ const Queue = (classes, props) => {
 
   const matches = useMediaQuery("(min-width:600px)");
 
-  let timerId = null;
+  const [timerId, setTimerId] = useState(null);
 
   const dispatch = useDispatch();
 
@@ -181,23 +181,33 @@ const Queue = (classes, props) => {
   const masterPlayTrack = () => {
     //master has clicked on play track
     //send websocket to all users saying who master is
-    let master = window.localStorage.getItem("currentUserId");
-    //send to db
-    sendQueuePusher(queue, privateId, master);
-    //send to websocket
-    socket.sendMessage(JSON.stringify({ master: master }));
 
-    //show that you are the dj
-    playNextTrack();
+    playTrack(queue[0].trackId, "", accessToken).then(res => {
+      if (res.status === 200 || res.status === 204) {
+        let master = window.localStorage.getItem("currentUserId");
+        //send to db
+        sendQueuePusher(queue, privateId, master);
+        //send to websocket
+        socket.sendMessage(JSON.stringify({ master: master }));
+
+        console.log("timer id exists: ", timerId);
+
+        //show that you are the dj
+        if (timerId !== null) {
+          clearTimeout(timerId);
+          setTimerId(null);
+        }
+        playNextTrack();
+      } else alert("Please make sure a spotify web player is active");
+    });
   };
 
   const playNextTrack = () => {
     //make master as current user
-    console.log("entering play next track (only for the dj)...");
+    console.log("entering play next track (only for the dj)...", timerId);
 
     //check if queue is not empty
     if (queue.length > 0) {
-      if (timerId) clearTimeout(timerId);
       //get device id
       let payload = {
         trackName: queue[0].name,
@@ -211,7 +221,8 @@ const Queue = (classes, props) => {
       let duration = queue[0].duration;
 
       console.log("new duration for timer: ", duration);
-      timerId = setTimeout(playNextTrack, duration);
+      let timerId = setTimeout(playNextTrack, duration);
+      setTimerId(timerId);
 
       console.log("new timer set: ", timerId);
 
@@ -238,7 +249,7 @@ const Queue = (classes, props) => {
 
           //update current queue and to all clients
           updateQueue(queue);
-        } else alert("Please make sure a spotify web player is active");
+        }
       });
 
       //fetch all users again

@@ -22,9 +22,10 @@ export default function Login() {
   const spotifyLogin = () => {
     window.location = BACKEND_URI + "/login";
   };
-  let { accessToken } = useSelector(state => ({
+  let { accessToken, socket } = useSelector(state => ({
     ...state.sessionReducer,
-    ...state.privateIdReducer
+    ...state.privateIdReducer,
+    ...state.socketReducer
   }));
 
   const matches = useMediaQuery("(min-width:600px)");
@@ -61,10 +62,13 @@ export default function Login() {
       });
     });
 
+    console.log("users: ", users);
+
     if (userIds.indexOf(uid) < 0) {
       addTheNewUser(name, uid);
-      currentUsers.push({ userName: name });
+      currentUsers.push({ userName: name, points: 10 });
     }
+
     setAllUsers(dispatch, currentUsers);
   };
 

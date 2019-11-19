@@ -9,7 +9,7 @@ export default function AllUsers() {
     ...state.allUsersReducer
   }));
 
-  const getAllUsers = () => {
+  const GetAllUsers = () => {
     if (playingUsers) {
       return playingUsers.map((i, key) => (
         <li className="user-item" key={key}>
@@ -23,7 +23,9 @@ export default function AllUsers() {
   return (
     <div className="allusers-container">
       <p className="current-players-heading">CURRENT PLAYERS</p>
-      <ul className="users-list">{getAllUsers()}</ul>
+      <ul className="users-list">
+        <GetAllUsers />
+      </ul>
     </div>
   );
 }
