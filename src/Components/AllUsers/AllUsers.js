@@ -1,5 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import Coin from "../../Assets/coin_img.png";
+import Musician from "../../Assets/dj.png";
 
 import "./AllUsers.css";
 export default function AllUsers() {
@@ -24,6 +26,12 @@ export default function AllUsers() {
     <div className="allusers-container">
       <p className="current-players-heading">CURRENT PLAYERS</p>
       <ul className="users-list">
+        <li>
+          <span>
+            <img className="coin" src={Coin} alt="points"></img>
+            <img className="coin" src={Musician} alt="musician"></img>
+          </span>
+        </li>
         <GetAllUsers />
       </ul>
     </div>
