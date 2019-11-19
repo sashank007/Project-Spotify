@@ -5,7 +5,8 @@ import {
 import {
   queueTrackReducer,
   currentTrackReducer,
-  displayCurrentTrackReducer
+  displayCurrentTrackReducer,
+  masterReducer
 } from "./Reducers/QueueReducer";
 import {
   sessionReducer,
@@ -25,6 +26,7 @@ const rootReducer = combineReducers({
   privateIdReducer,
   displayCurrentTrackReducer,
   allUsersReducer,
+  masterReducer,
   socketReducer
 });
 

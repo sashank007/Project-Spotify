@@ -7,13 +7,14 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import { setAllUsers } from "../../Actions/UsersActions";
 import { setSessionToken, setPrivateID } from "../../Actions/SessionActions";
-import { queueTrack } from "../../Actions/QueueActions";
+import { queueTrack, setMaster } from "../../Actions/QueueActions";
 
 import { addNewUser, getAllUsers } from "../../Middleware/userMiddleware";
 import { getQueue } from "../../Middleware/queueMiddleware";
 
 import "./Login.css";
 import authHost from "../../config/app";
+import { isMaster } from "../../utils";
 
 const BACKEND_URI = authHost.HOST;
 
@@ -109,6 +110,12 @@ export default function Login() {
       .then(data => {
         if (data.hasOwnProperty("queues") && data.queues.length > 0) {
           let { queue } = data.queues[0];
+          //fetch current master, add to localstorage
+          let { master } = data.queues[0];
+          window.localStorage.setItem("master", master);
+          if (isMaster()) setMaster(dispatch, true);
+          else setMaster(dispatch, false);
+
           queueTrack(dispatch, queue);
         }
       });

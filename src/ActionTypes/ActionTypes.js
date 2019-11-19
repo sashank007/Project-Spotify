@@ -7,3 +7,4 @@ export const SET_PRIVATE_ID = "SET_PRIVATE_ID";
 export const DISPLAY_CURRENT_TRACK = "DISPLAY_CURRENT_TRACK";
 export const GET_ALL_USERS = "GET_ALL_USERS";
 export const SET_SOCKET = "SET_SOCKET";
+export const SET_MASTER = "SET_MASTER";

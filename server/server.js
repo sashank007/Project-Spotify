@@ -55,12 +55,13 @@ const performQueryUpdateUsers = async (privateId, userName, userId, points) => {
   };
 };
 
-const performQueryUpdateQueues = async (privateId, queue) => {
+const performQueryUpdateQueues = async (privateId, queue, master) => {
   const queues = db.collection("queues");
 
   const newQueue = {
     privateId,
-    queue
+    queue,
+    master
   };
 
   return {
@@ -291,6 +292,7 @@ app.post("/update_user", async function(req, res) {
 app.post("/update_queue", async function(req, res) {
   var id = req.body.privateId;
   var queue = req.body.queue;
+  var master = req.body.master;
 
   if (!client.isConnected()) {
     // Cold start or connection timed out. Create new connection.
@@ -308,9 +310,10 @@ app.post("/update_queue", async function(req, res) {
   try {
     const queues = db.collection("queues");
     const query = { privateId: id };
-
+    var newvalues = {};
+    if (master !== "") newvalues = { $set: { master: master } };
     //set new value
-    var newvalues = { $set: { queue: queue } };
+    else newvalues = { $set: { queue: queue } };
 
     //check if there is existing queue
     queues.find(query).toArray(async (err, result) => {
@@ -321,7 +324,7 @@ app.post("/update_queue", async function(req, res) {
         });
       } else {
         //create new queue
-        res.json(await performQueryUpdateQueues(id, queue));
+        res.json(await performQueryUpdateQueues(id, queue, master));
       }
       res.send({
         search_id: id,

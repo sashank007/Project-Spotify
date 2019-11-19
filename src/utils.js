@@ -6,3 +6,11 @@ export function IsJsonString(str) {
   }
   return true;
 }
+
+export function isMaster() {
+  let master = window.localStorage.getItem("master");
+  let user = window.localStorage.getItem("currentUserId");
+
+  if (master !== "" && master !== user) return false;
+  return true;
+}

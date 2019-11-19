@@ -21,8 +21,9 @@ class Player {
     return getUserPoints(this.privateId, this.userId);
   }
 
-  songPlayed(userName, songId) {
+  getUserPoints() {
     //fetch user who played the song and increment
+    return getUserPoints(this.privateId, this.userId);
   }
 
   getCurrentPoints() {

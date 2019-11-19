@@ -18,28 +18,38 @@ import { IsJsonString } from "../../utils";
 import UpIcon from "../Common/UpIcon";
 import DownIcon from "../Common/DownIcon";
 
-import { queueTrack, updateCurrentTrack } from "../../Actions/QueueActions";
+import {
+  queueTrack,
+  updateCurrentTrack,
+  setMaster
+} from "../../Actions/QueueActions";
 import { setSocket } from "../../Actions/SessionActions";
 import { setAllUsers } from "../../Actions/UsersActions";
 import { displayCurrentTrack } from "../../Actions/CurrentTrackActions";
-
+import { updatePoints } from "../../Middleware/pointsMiddleware";
 import Socket from "../../Interface/SocketInterface";
 import authHost from "../../config/app";
 import "./Queue.css";
-import { updatePoints, getUserPoints } from "../../Middleware/pointsMiddleware";
+
 import Player from "../../Interface/PointsInterface";
 const SOCKET_URI = authHost.SOCKET;
 
 const Queue = (classes, props) => {
-  const { queue, accessToken, privateId, playingUsers, socket } = useSelector(
-    state => ({
-      ...state.queueTrackReducer,
-      ...state.sessionReducer,
-      ...state.privateIdReducer,
-      ...state.allUsersReducer,
-      ...state.socketReducer
-    })
-  );
+  const {
+    queue,
+    accessToken,
+    privateId,
+    playingUsers,
+    isMaster,
+    socket
+  } = useSelector(state => ({
+    ...state.queueTrackReducer,
+    ...state.sessionReducer,
+    ...state.privateIdReducer,
+    ...state.allUsersReducer,
+    ...state.masterReducer,
+    ...state.socketReducer
+  }));
 
   const matches = useMediaQuery("(min-width:600px)");
 
@@ -50,14 +60,40 @@ const Queue = (classes, props) => {
   const addToQueue = data => {
     try {
       if (IsJsonString(data)) {
-        let updatedQueue = JSON.parse(data);
-        queueTrack(dispatch, updatedQueue);
+        console.log(data);
+        let d = JSON.parse(data);
+        if (d.hasOwnProperty("master")) {
+          //update current master
+          let { master } = d;
+          window.localStorage.setItem("master", master);
+          if (
+            master !== "" &&
+            master !== window.localStorage.getItem("currentUserId")
+          )
+            setMaster(dispatch, false);
+          else setMaster(dispatch, true);
+        } else if (d.hasOwnProperty("currentUsers")) {
+          let { currentUsers } = d;
+          console.log("currentuserS: ", currentUsers);
+          currentUsers.sort((a, b) => b.points - a.points);
+          setAllUsers(dispatch, currentUsers);
+        } else {
+          queueTrack(dispatch, d);
+        }
       }
     } catch (e) {
       throw e;
     }
   };
 
+  const fetchAllUsers = () => {
+    //fetch all users first
+    getAllUsers(privateId)
+      .then(res => res.json())
+      .then(res => {
+        initialFetchUsers(res);
+      });
+  };
   const sendSocketData = e => {
     socket.sendMessage(JSON.stringify(queue));
   };
@@ -73,6 +109,7 @@ const Queue = (classes, props) => {
 
   useEffect(() => {
     createSocketConn();
+    fetchAllUsers();
   }, []);
 
   const [state, setState] = React.useState({
@@ -104,43 +141,60 @@ const Queue = (classes, props) => {
     sendQueuePusher(queue, privateId);
   };
 
-  const vote = () => {
+  const pointModification = (callback, addPoints, userId, mode = "vote") => {
     let privateId = window.localStorage.getItem("privateId");
-    let currentUserId = window.localStorage.getItem("currentUserId");
-    let player = new Player(privateId, currentUserId);
+
+    let player = new Player(privateId, userId);
     player
-      .vote()
+      .getUserPoints()
       .then(res => res.json())
       .then(data => {
         console.log("points data for indiv user: ", data);
         if (data.users.length > 0) {
           let { points } = data.users[0];
-          points = points - 1;
-          updatePoints(privateId, currentUserId, points)
-            .then(res => res.json())
-            .then(d => {
-              if (d.status === 200) {
-                getAllUsers(privateId)
-                  .then(res => res.json())
-                  .then(res => {
-                    handleUsers(res);
-                  });
-                console.log("succesfully updated points...");
-              }
-            });
+          if (mode === "vote" && points <= 0) {
+            //do not increase queue
+            //send alert saying you don't have enough points
+            alert("You do not have enough points");
+          } else {
+            points = points + addPoints;
+            callback(points);
+
+            //update points
+            updatePoints(privateId, userId, points)
+              .then(res => res.json())
+              .then(d => {
+                if (d.status === 200) {
+                  getAllUsers(privateId)
+                    .then(res => res.json())
+                    .then(res => {
+                      handleUsers(res);
+                    });
+                  console.log("succesfully updated points...");
+                }
+              });
+          }
         }
-        //check if points have exceeded
-        // updatePoints(privateId,currentUserId,)
       });
   };
 
-  const _parseJSON = response => {
-    return response.text().then(function(text) {
-      return text ? JSON.parse(text) : {};
-    });
+  const masterPlayTrack = () => {
+    //master has clicked on play track
+    //send websocket to all users saying who master is
+    let master = window.localStorage.getItem("currentUserId");
+    //send to db
+    sendQueuePusher(queue, privateId, master);
+    //send to websocket
+    socket.sendMessage(JSON.stringify({ master: master }));
+
+    //show that you are the dj
+    playNextTrack();
   };
 
   const playNextTrack = () => {
+    //make master as current user
+    console.log("entering play next track (only for the dj)...");
+
     //check if queue is not empty
     if (queue.length > 0) {
       if (timerId) clearTimeout(timerId);
@@ -156,13 +210,28 @@ const Queue = (classes, props) => {
       //set duration for timer
       let duration = queue[0].duration;
 
+      console.log("new duration for timer: ", duration);
       timerId = setTimeout(playNextTrack, duration);
+
+      console.log("new timer set: ", timerId);
 
       //play the track on top of queue
       playTrack(queue[0].trackId, "", accessToken).then(res => {
         if (res.status === 200 || res.status === 204) {
+          if (queue[0].hasOwnProperty("playedBy")) {
+            let { playedBy } = queue[0];
+
+            //update points by 2
+            const trackCallback = points => {
+              console.log("track callback: ", points);
+            };
+            pointModification(trackCallback, 2, playedBy, "playTrack");
+          }
+
           //remove the top track
           queue.splice(0, 1);
+
+          //update current user points
 
           //display the current track in player
           displayCurrentTrack(dispatch, true);
@@ -181,6 +250,24 @@ const Queue = (classes, props) => {
     }
   };
 
+  const initialFetchUsers = (res, name, uid) => {
+    let { users } = res;
+    let currentUsers = [];
+    let userIds = [];
+    let points = [];
+
+    users.map((i, key) => {
+      userIds.push(users[key].userId);
+      points.push(users[key].points);
+      currentUsers.push({
+        userName: users[key].userName,
+        userId: users[key].userId,
+        points: users[key].points
+      });
+    });
+
+    setAllUsers(dispatch, currentUsers);
+  };
   const handleUsers = (res, name, uid) => {
     let { users } = res;
     let currentUsers = [];
@@ -196,34 +283,47 @@ const Queue = (classes, props) => {
         points: users[key].points
       });
     });
-    setAllUsers(dispatch, currentUsers);
+
+    //send to websocket
+    socket.sendMessage(JSON.stringify({ currentUsers: currentUsers }));
   };
 
   const upVoteTrack = e => {
-    let trackId = e.target.id;
-    queue[trackId].score += 1;
+    e.persist();
+    const upVoteCallbak = points => {
+      let trackId = e.target.id;
 
-    //sort queue based on upvotes
-    queue.sort((a, b) => b.score - a.score);
+      queue[trackId].score += 1;
 
-    //update current queue and to all clients
-    updateQueue(queue);
+      //sort queue based on upvotes
+      queue.sort((a, b) => b.score - a.score);
 
-    //update points
-    vote();
+      //update current queue and to all clients
+      updateQueue(queue);
+    };
+
+    //update current user's points
+    let currentUserId = window.localStorage.getItem("currentUserId");
+    pointModification(upVoteCallbak, -1, currentUserId);
   };
 
   const downVoteTrack = e => {
-    let trackId = e.target.id;
+    e.persist();
+    const downVoteCallback = points => {
+      let trackId = e.target.id;
 
-    queue[trackId].score -= 1;
-    queue.sort((a, b) => b.score - a.score);
+      queue[trackId].score -= 1;
 
-    //update current queue and to all clients
-    updateQueue(queue);
+      //sort queue based on upvotes
+      queue.sort((a, b) => b.score - a.score);
 
-    //update points
-    vote();
+      //update current queue and to all clients
+      updateQueue(queue);
+    };
+
+    //update current user's points
+    let currentUserId = window.localStorage.getItem("currentUserId");
+    pointModification(downVoteCallback, -1, currentUserId);
   };
 
   const QueueItems = () => {
@@ -251,13 +351,14 @@ const Queue = (classes, props) => {
             <QueueItems />
           </ul>
           <Button
+            disabled={!isMaster}
             variant="contained"
             className={classes.button}
             style={{
               backgroundColor: "#fff",
               fontFamily: "'Luckiest Guy', cursive"
             }}
-            onClick={playNextTrack}
+            onClick={masterPlayTrack}
             startIcon={<PlayArrowIcon />}
           >
             Play
@@ -293,6 +394,7 @@ const Queue = (classes, props) => {
               </ul>
             </div>
             <Button
+              disabled={!isMaster}
               variant="contained"
               className={classes.button}
               style={{
@@ -301,7 +403,7 @@ const Queue = (classes, props) => {
                 marginLeft: "10%",
                 fontFamily: "'Luckiest Guy', cursive"
               }}
-              onClick={playNextTrack}
+              onClick={masterPlayTrack}
               startIcon={<PlayArrowIcon />}
             >
               Play

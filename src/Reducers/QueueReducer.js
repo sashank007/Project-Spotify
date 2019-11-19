@@ -16,6 +16,22 @@ export const queueTrackReducer = (
   return state;
 };
 
+export const masterReducer = (
+  state = {
+    isMaster: true
+  },
+  { type, payload }
+) => {
+  switch (type) {
+    case ACTION_TYPES.SET_MASTER: {
+      return { ...state, isMaster: payload };
+    }
+    default: {
+    }
+  }
+  return state;
+};
+
 export const displayCurrentTrackReducer = (
   state = {
     showCurrentTrack: false

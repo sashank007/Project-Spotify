@@ -7,3 +7,7 @@ export const queueTrack = (dispatch = null, payload = null) => {
 export const updateCurrentTrack = (dispatch = null, payload = null) => {
   dispatch({ type: ACTION_TYPES.UPDATE_CURRENT_TRACK, payload: payload });
 };
+
+export const setMaster = (dispatch = null, payload = null) => {
+  dispatch({ type: ACTION_TYPES.SET_MASTER, payload: payload });
+};

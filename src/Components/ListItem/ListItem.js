@@ -44,12 +44,14 @@ export default function TrackItem(props) {
   }));
 
   const queueTheTrack = e => {
+    let currentPlayer = window.localStorage.getItem("currentUserId");
     queue.push({
       name: trackName,
       trackId: tracks[id].uri,
       score: 0,
       duration: tracks[id].duration_ms,
-      trackImage: tracks[id].album.images[0].url
+      trackImage: tracks[id].album.images[0].url,
+      playedBy: currentPlayer
     });
 
     //send socket data

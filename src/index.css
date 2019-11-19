@@ -7,7 +7,7 @@ body {
   /* font-family: "Quicksand", sans-serif; */
   /* font-family: "Alegreya", serif; */
   font-family: "Luckiest Guy", cursive;
-  color: #b3b3b3;
+  color: #fff;
   width: 100vw;
   height: 100vh;
   /* background: linear-gradient(
@@ -17,7 +17,7 @@ body {
     rgb(28, 149, 103)
   ); */
   /* background: #f9f9f9; */
-  background: #bda4a4;
+  background: #fff;
   overflow-x: hidden;
   text-shadow: 2px 8px 6px rgba(0, 0, 0, 0.2),
     0px -5px 35px rgba(255, 255, 255, 0.3);
