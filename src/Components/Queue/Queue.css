@@ -1,32 +1,10 @@
 .Queue-Container {
-  /* left: 0;
-    top: 0;
-    width: 100px;
-    padding: 40px 0 0;
-    right: auto;
-    height: auto;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    -ms-flex-pack: start;
-    justify-content: flex-start; */
   -webkit-box-shadow: 10px 0 30px rgba(0, 0, 0, 0.05);
   box-shadow: 3px 0 30px rgba(0, 0, 0, 0.1);
   width: 20vw;
   position: absolute;
   right: 0;
-  /* background: #000000; */
-  /* background: linear-gradient(to right, rgb(20, 30, 48), rgb(36, 59, 85)); */
-  /* background: linear-gradient(to right, rgb(0, 0, 0), rgb(67, 67, 67)); */
-  /* background: linear-gradient(
-    to right,
-    rgb(202, 137, 17),
-    rgb(0, 0, 0),
-    /* rgb(67, 67, 67) */
-  /* ); */
-
-  /* border-left: 0.8px solid rgb(235, 211, 211); */
   background-color: white;
-  /* color: #5a55558a; */
   color: black;
   height: 100vh;
 }
@@ -42,9 +20,6 @@ ul {
 p {
   font-size: 32px;
   color: #0000008a;
-
-  /* font-family: "Alegreya", serif; */
-  /* font-family: "Rajdhani", sans-serif; */
   font-family: "Luckiest Guy", cursive;
 }
 

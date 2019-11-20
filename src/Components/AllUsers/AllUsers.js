@@ -3,8 +3,8 @@ import { useSelector } from "react-redux";
 import Coin from "../../Assets/coin_img.png";
 import Musician from "../../Assets/dj.png";
 import Drawer from "@material-ui/core/Drawer";
-import { Button } from "@material-ui/core";
-
+import { IconButton } from "@material-ui/core";
+import EmojiEventsIcon from "@material-ui/icons/EmojiEvents";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import "./AllUsers.css";
@@ -63,28 +63,28 @@ export default function AllUsers() {
         </div>
       ) : (
         <div>
-          <Button
+          <IconButton
+            onClick={toggleDrawer("left", true)}
             style={{
-              fontSize: 8,
               fontFamily: "'Rajdhani', sans-serif",
               position: "absolute",
               left: 0,
-              marginLeft: "12px",
-              top: "10vh",
-              color: "white"
+              marginLeft: "8px",
+              top: "7.5vh",
+              color: "#fffffffa"
             }}
-            onClick={toggleDrawer("left", true)}
-            variant="outlined"
+            aria-label="delete"
+            className="scoreboard-button"
           >
-            Scoreboard
-          </Button>
+            <EmojiEventsIcon fontSize="large" />
+          </IconButton>
           <Drawer
             style={{ width: 250 }}
             anchor="left"
             open={state.left}
             onClose={toggleDrawer("left", false)}
           >
-            <p className="current-players-heading">CURRENT PLAYERS</p>
+            <p className="current-players-heading">Scoreboard</p>
             <ul className="users-list">
               <li className="img-item">
                 <span>

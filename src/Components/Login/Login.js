@@ -6,7 +6,7 @@ import queryString from "query-string";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import { setAllUsers } from "../../Actions/UsersActions";
-import { setSessionToken, setPrivateID } from "../../Actions/SessionActions";
+import { setSessionToken } from "../../Actions/SessionActions";
 import { queueTrack, setMaster } from "../../Actions/QueueActions";
 
 import { addNewUser, getAllUsers } from "../../Middleware/userMiddleware";
@@ -22,7 +22,7 @@ export default function Login() {
   const spotifyLogin = () => {
     window.location = BACKEND_URI + "/login";
   };
-  let { accessToken, socket } = useSelector(state => ({
+  let { accessToken } = useSelector(state => ({
     ...state.sessionReducer,
     ...state.privateIdReducer,
     ...state.socketReducer
@@ -31,7 +31,6 @@ export default function Login() {
   const matches = useMediaQuery("(min-width:600px)");
 
   const [userName, setUserName] = useState("");
-  const [privateId, setPrivateId] = useState("");
 
   const dispatch = useDispatch();
 
@@ -60,9 +59,8 @@ export default function Login() {
         userId: users[key].userId,
         points: users[key].points
       });
+      return null;
     });
-
-    console.log("users: ", users);
 
     if (userIds.indexOf(uid) < 0) {
       addTheNewUser(name, uid);
@@ -101,7 +99,7 @@ export default function Login() {
   const hasLoggedIn = (userName, userId) => {
     let id = window.localStorage.getItem("privateId");
     window.localStorage.setItem("currentUserId", userId);
-    setPrivateId(id);
+
     getAllUsers(id)
       .then(res => res.json())
       .then(res => {
@@ -174,7 +172,7 @@ export default function Login() {
           LOGIN
         </Button>
       ) : (
-        <div> {userName}</div>
+        <div className="username"> {userName}</div>
       )}
     </div>
   );

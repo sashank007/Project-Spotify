@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import { Button } from "@material-ui/core";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
@@ -7,14 +6,10 @@ import Drawer from "@material-ui/core/Drawer";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import { playTrack } from "../../Middleware/playbackMiddleware";
-import { sendQueuePusher, getQueue } from "../../Middleware/queueMiddleware";
-import {
-  updateCurrentUser,
-  getAllUsers
-} from "../../Middleware/userMiddleware";
+import { sendQueuePusher } from "../../Middleware/queueMiddleware";
+import { getAllUsers } from "../../Middleware/userMiddleware";
 
 import { IsJsonString, isSameParty } from "../../utils";
-
 import UpIcon from "../Common/UpIcon";
 import DownIcon from "../Common/DownIcon";
 
@@ -284,6 +279,7 @@ const Queue = (classes, props) => {
         userId: users[key].userId,
         points: users[key].points
       });
+      return null;
     });
 
     setAllUsers(dispatch, currentUsers);
@@ -393,7 +389,7 @@ const Queue = (classes, props) => {
               position: "absolute",
               right: 0,
               marginRight: "12px",
-              top: "10vh",
+              top: "7.5vh",
               color: "white"
             }}
             onClick={toggleDrawer("right", true)}

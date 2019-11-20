@@ -8,3 +8,9 @@
   font-family: "Luckiest Guy", cursive;
   z-index: 999;
 }
+
+@media only screen and (max-width: 600px) {
+  .username {
+    color: white;
+  }
+}

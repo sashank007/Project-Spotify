@@ -1,5 +1,4 @@
-import { getUserPoints, updatePoints } from "../Middleware/pointsMiddleware";
-import { getAllUsers } from "../Middleware/userMiddleware";
+import { getUserPoints } from "../Middleware/pointsMiddleware";
 
 class Player {
   //create new user with max points
@@ -9,16 +8,6 @@ class Player {
 
     this.songPlayedBonus = 2;
     this.votingPenalty = 1;
-  }
-
-  vote() {
-    console.log(
-      "private id and user id in interface :",
-      this.privateId,
-      this.userId
-    );
-    //update current user's points and decrement by 1
-    return getUserPoints(this.privateId, this.userId);
   }
 
   getUserPoints() {

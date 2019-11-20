@@ -54,6 +54,13 @@
   margin-right: 23 px;
 }
 
+.scoreboard-button {
+  position: absolute;
+  left: 0;
+  background: white;
+  top: 10vh;
+  margin-left: 12px;
+}
 @media only screen and (max-width: 600px) {
   .allusers-container {
     display: none;
