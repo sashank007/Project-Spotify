@@ -73,6 +73,7 @@ export default function Login() {
   const checkLocalStorage = () => {
     let [localStorageToken, localStorageExpiration] = fetchLocalStorage();
     let expDate = new Date(parseInt(localStorageExpiration));
+
     let currentDate = new Date();
     if (localStorageToken && expDate > currentDate) {
       setSessionToken(dispatch, localStorageToken);
