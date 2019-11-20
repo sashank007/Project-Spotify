@@ -14,3 +14,7 @@ export function isMaster() {
   if (master !== "" && master !== user) return false;
   return true;
 }
+
+export function isSameParty(id) {
+  return id === window.localStorage.getItem("privateId");
+}

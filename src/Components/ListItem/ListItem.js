@@ -55,7 +55,7 @@ export default function TrackItem(props) {
     });
 
     //send socket data
-    socket.sendMessage(JSON.stringify(queue));
+    socket.sendMessage(JSON.stringify({ queue: queue, privateId: privateId }));
 
     //queue the new track
     queueTrack(dispatch, queue);

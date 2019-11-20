@@ -13,7 +13,7 @@ import {
   getAllUsers
 } from "../../Middleware/userMiddleware";
 
-import { IsJsonString } from "../../utils";
+import { IsJsonString, isSameParty } from "../../utils";
 
 import UpIcon from "../Common/UpIcon";
 import DownIcon from "../Common/DownIcon";
@@ -59,26 +59,35 @@ const Queue = (classes, props) => {
 
   const addToQueue = data => {
     try {
+      //check if current privateId same as queue private Id
       if (IsJsonString(data)) {
         console.log(data);
         let d = JSON.parse(data);
-        if (d.hasOwnProperty("master")) {
-          //update current master
-          let { master } = d;
-          window.localStorage.setItem("master", master);
-          if (
-            master !== "" &&
-            master !== window.localStorage.getItem("currentUserId")
-          )
-            setMaster(dispatch, false);
-          else setMaster(dispatch, true);
-        } else if (d.hasOwnProperty("currentUsers")) {
-          let { currentUsers } = d;
-          console.log("currentuserS: ", currentUsers);
-          currentUsers.sort((a, b) => b.points - a.points);
-          setAllUsers(dispatch, currentUsers);
-        } else {
-          queueTrack(dispatch, d);
+        let id = d.privateId;
+
+        //check if current pusher coming in is of same party
+        console.log("id ... ", id);
+        if (isSameParty(id)) {
+          if (d.hasOwnProperty("master")) {
+            //update current master
+            let { master } = d;
+            window.localStorage.setItem("master", master);
+            if (
+              master !== "" &&
+              master !== window.localStorage.getItem("currentUserId")
+            )
+              setMaster(dispatch, false);
+            else setMaster(dispatch, true);
+          } else if (d.hasOwnProperty("currentUsers")) {
+            let { currentUsers } = d;
+            console.log("currentuserS: ", currentUsers);
+            currentUsers.sort((a, b) => b.points - a.points);
+            setAllUsers(dispatch, currentUsers);
+          } else {
+            let { queue } = d;
+            console.log("inside q: ", queue);
+            queueTrack(dispatch, queue);
+          }
         }
       }
     } catch (e) {
@@ -95,7 +104,7 @@ const Queue = (classes, props) => {
       });
   };
   const sendSocketData = e => {
-    socket.sendMessage(JSON.stringify(queue));
+    socket.sendMessage(JSON.stringify({ queue: queue, privateId: privateId }));
   };
   const createSocketConn = () => {
     let s = new Socket(SOCKET_URI);

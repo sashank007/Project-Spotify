@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPrivateID } from "../../Actions/SessionActions";
 import "./IDInput.css";
+import { Button } from "@material-ui/core";
 export default function IDInput() {
   let { playingUsers, privateId } = useSelector(state => ({
     ...state.sessionReducer,
@@ -22,8 +23,15 @@ export default function IDInput() {
   return (
     <div className="idinput-container">
       <label>Join a Session</label>
-      <input ref={idInputRef}></input>
-      <button onClick={setPrivateId}>GO</button>
+      <input className="inp" ref={idInputRef}></input>
+      <Button
+        variant="contained"
+        size="small"
+        style={{ background: "white", marginLeft: 2 }}
+        onClick={setPrivateId}
+      >
+        GO
+      </Button>
     </div>
   );
 }
