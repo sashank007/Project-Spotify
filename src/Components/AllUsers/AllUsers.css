@@ -1,39 +1,10 @@
-/* .allusers-container {
-  display: block;
-  position: absolute;
-  left: 0px;
-  top: 50px;
-  height: 800px;
-} */
-
 .allusers-container {
-  /* left: 0;
-    top: 0;
-    width: 100px;
-    padding: 40px 0 0;
-    right: auto;
-    height: auto;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    -ms-flex-pack: start;
-    justify-content: flex-start; */
   -webkit-box-shadow: 10px 0 30px rgba(0, 0, 0, 0.05);
   box-shadow: 3px 0 30px rgba(0, 0, 0, 0.1);
   width: 8vw;
   position: absolute;
   left: 0;
   padding: 10px;
-  /* background: #000000; */
-  /* background: linear-gradient(to right, rgb(20, 30, 48), rgb(36, 59, 85)); */
-  /* background: linear-gradient(to right, rgb(0, 0, 0), rgb(67, 67, 67)); */
-  /* background: linear-gradient(
-    to right,
-    rgb(202, 137, 17),
-    rgb(0, 0, 0),
-    /* rgb(67, 67, 67) */
-  /* ); */
-
-  /* border-left: 0.8px solid rgb(235, 211, 211); */
   background-color: white;
   color: #5a55558a;
   height: 100vh;
@@ -66,17 +37,37 @@
 .points-container {
   margin-left: 10px;
 }
+.img-item {
+  width: 100px;
 
+  margin-left: 0.5vw;
+
+  color: black;
+  font-family: monospace;
+}
 .coin {
   float: right;
   height: 20px;
   width: 20px;
   padding: 8px;
-  margin-right: 10px;
+  margin-right: 23 px;
 }
 
 @media only screen and (max-width: 600px) {
   .allusers-container {
     display: none;
+  }
+  .users-list {
+    margin-left: 10vw;
+  }
+  .coin {
+    margin-left: 10px;
+  }
+  .img-item {
+    float: left;
+    padding: 5px;
+  }
+  .points-container {
+    margin-left: 20px;
   }
 }
