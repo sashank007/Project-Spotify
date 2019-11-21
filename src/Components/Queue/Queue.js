@@ -58,11 +58,13 @@ const Queue = (classes, props) => {
       if (IsJsonString(data)) {
         console.log(data);
         let d = JSON.parse(data);
-        let id = d.privateId;
+        let privateId = d.privateId;
+
+        console.log("d : ", d);
 
         //check if current pusher coming in is of same party
-        console.log("id ... ", id);
-        if (isSameParty(id)) {
+        console.log("id ... ", privateId);
+        if (isSameParty(privateId)) {
           if (d.hasOwnProperty("master")) {
             //update current master
             let { master } = d;
@@ -192,7 +194,9 @@ const Queue = (classes, props) => {
         //send to db
         sendQueuePusher(queue, privateId, master);
         //send to websocket
-        socket.sendMessage(JSON.stringify({ master: master }));
+        socket.sendMessage(
+          JSON.stringify({ privateId: privateId, master: master })
+        );
 
         console.log("timer id exists: ", timerId);
 
@@ -301,7 +305,9 @@ const Queue = (classes, props) => {
     });
 
     //send to websocket
-    socket.sendMessage(JSON.stringify({ currentUsers: currentUsers }));
+    socket.sendMessage(
+      JSON.stringify({ privateId: privateId, currentUsers: currentUsers })
+    );
   };
 
   const upVoteTrack = e => {
