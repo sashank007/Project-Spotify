@@ -273,7 +273,7 @@ const Queue = (classes, props) => {
           queue.splice(0, 1);
 
           //display the current track in player
-          displayCurrentTrack(dispatch, true);
+          // displayCurrentTrack(dispatch, true);
 
           //update current queue and to all clients
           updateQueue(queue);
