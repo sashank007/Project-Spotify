@@ -1,7 +1,7 @@
 .allusers-container {
   -webkit-box-shadow: 10px 0 30px rgba(0, 0, 0, 0.05);
   box-shadow: 3px 0 30px rgba(0, 0, 0, 0.1);
-  width: 8vw;
+  width: 12vw;
   position: absolute;
   left: 0;
   padding: 10px;
@@ -11,8 +11,9 @@
 }
 
 .current-players-heading {
-  font-size: 24px;
+  font-size: 2vw;
   padding: 10px;
+  margin-right: 5px;
   color: #0000008a;
   /* font-family: "Alegreya", serif; */
   /* font-family: "Rajdhani", sans-serif; */
@@ -36,7 +37,10 @@
   font-family: "Quicksand", sans-serif;
 }
 .points-container {
-  margin-left: 10px;
+  margin-left: 20px;
+}
+.name-container {
+  margin-right: 5px;
 }
 .img-item {
   width: 100px;
@@ -64,6 +68,7 @@
 @media only screen and (max-width: 600px) {
   .allusers-container {
     display: none;
+    width: 8vw;
   }
   .users-list {
     margin-left: 10vw;
@@ -77,5 +82,8 @@
   }
   .points-container {
     margin-left: 20px;
+  }
+  .current-players-heading {
+    font-size: 16px;
   }
 }

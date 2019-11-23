@@ -28,7 +28,7 @@ export default function AllUsers() {
     if (playingUsers) {
       return playingUsers.map((i, key) => (
         <li className="user-item" key={key}>
-          <span>{playingUsers[key].userName}</span>
+          <span className="name-container">{playingUsers[key].userName}</span>
           <span className="points-container">{playingUsers[key].points}</span>
         </li>
       ));
@@ -50,7 +50,7 @@ export default function AllUsers() {
     <div>
       {matches ? (
         <div className="allusers-container">
-          <p className="current-players-heading">CURRENT PLAYERS</p>
+          <p className="current-players-heading">Scoreboard</p>
           <ul className="users-list">
             <li className="img-item">
               <span>

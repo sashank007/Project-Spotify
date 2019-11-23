@@ -388,8 +388,10 @@ const Queue = (classes, props) => {
     <div>
       {matches ? (
         <div className="Queue-Container">
-          <p style={{ marginTop: "8vh" }}>YOUR QUEUE</p>
-          <ul>
+          <p className="queue-header" style={{ marginTop: "8vh" }}>
+            YOUR QUEUE
+          </p>
+          <ul className="queue-items">
             <QueueItems />
           </ul>
           <Button
@@ -430,8 +432,13 @@ const Queue = (classes, props) => {
             onClose={toggleDrawer("right", false)}
           >
             <div style={{ width: 250 }}>
-              <p style={{ marginLeft: 20, marginTop: "10vh" }}>YOUR QUEUE</p>
-              <ul>
+              <p
+                className="queue-header"
+                style={{ marginLeft: 20, marginTop: "10vh" }}
+              >
+                YOUR QUEUE
+              </p>
+              <ul className="queue-items">
                 <QueueItems />
               </ul>
             </div>
