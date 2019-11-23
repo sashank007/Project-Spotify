@@ -166,7 +166,7 @@ const Queue = (classes, props) => {
           if (mode === "vote" && points <= 0) {
             //do not increase queue
             //send alert saying you don't have enough points
-            alert("You do not have enough points");
+            alert("YoQu do not have enough points");
           } else {
             points = points + addPoints;
             callback(points);
@@ -400,7 +400,8 @@ const Queue = (classes, props) => {
             className={classes.button}
             style={{
               backgroundColor: "#fff",
-              fontFamily: "'Luckiest Guy', cursive"
+              fontFamily: "'Luckiest Guy', cursive",
+              marginBottom: "20px"
             }}
             onClick={masterPlayTrack}
             startIcon={<PlayArrowIcon />}
@@ -418,6 +419,7 @@ const Queue = (classes, props) => {
               right: 0,
               marginRight: "12px",
               top: "8vh",
+              marginBottom: "20px",
               color: "white"
             }}
             onClick={toggleDrawer("right", true)}
