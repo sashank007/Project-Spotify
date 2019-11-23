@@ -50,17 +50,18 @@ export default function Login() {
     let currentUsers = [];
     let userIds = [];
     let points = [];
-
-    users.map((i, key) => {
-      userIds.push(users[key].userId);
-      points.push(users[key].points);
-      currentUsers.push({
-        userName: users[key].userName,
-        userId: users[key].userId,
-        points: users[key].points
+    if (users) {
+      users.map((i, key) => {
+        userIds.push(users[key].userId);
+        points.push(users[key].points);
+        currentUsers.push({
+          userName: users[key].userName,
+          userId: users[key].userId,
+          points: users[key].points
+        });
+        return null;
       });
-      return null;
-    });
+    }
 
     if (userIds.indexOf(uid) < 0) {
       addTheNewUser(name, uid);

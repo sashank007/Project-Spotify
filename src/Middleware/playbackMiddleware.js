@@ -14,3 +14,13 @@ export const playTrack = (trackId, device_id, token) => {
     })
   });
 };
+
+export const getCurrentTrack = token => {
+  console.log("get current track : ", token);
+  return fetch(`${SPOTIFY_API_BASE}/me/player/currently-playing`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+};

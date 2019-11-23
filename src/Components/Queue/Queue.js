@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Button } from "@material-ui/core";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import Drawer from "@material-ui/core/Drawer";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
-import { playTrack } from "../../Middleware/playbackMiddleware";
+import {
+  playTrack,
+  getCurrentTrack
+} from "../../Middleware/playbackMiddleware";
 import { sendQueuePusher } from "../../Middleware/queueMiddleware";
 import { getAllUsers } from "../../Middleware/userMiddleware";
 
@@ -20,13 +23,18 @@ import {
 } from "../../Actions/QueueActions";
 import { setSocket } from "../../Actions/SessionActions";
 import { setAllUsers } from "../../Actions/UsersActions";
-import { displayCurrentTrack } from "../../Actions/CurrentTrackActions";
+import {
+  displayCurrentTrack,
+  setCurrentTrackDuration
+} from "../../Actions/CurrentTrackActions";
 import { updatePoints } from "../../Middleware/pointsMiddleware";
 import Socket from "../../Interface/SocketInterface";
 import authHost from "../../config/app";
 import "./Queue.css";
 
 import Player from "../../Interface/PointsInterface";
+import { access } from "fs";
+
 const SOCKET_URI = authHost.SOCKET;
 
 const Queue = (classes, props) => {
@@ -34,34 +42,41 @@ const Queue = (classes, props) => {
     queue,
     accessToken,
     privateId,
-
     isMaster,
-    socket
+    socket,
+    currentTrackDuration
   } = useSelector(state => ({
     ...state.queueTrackReducer,
     ...state.sessionReducer,
     ...state.privateIdReducer,
     ...state.allUsersReducer,
     ...state.masterReducer,
-    ...state.socketReducer
+    ...state.socketReducer,
+    ...state.currentTrackReducer
   }));
 
   const matches = useMediaQuery("(min-width:600px)");
 
+  const [seconds, setSeconds] = useState(0);
   const [timerId, setTimerId] = useState(null);
-
+  const [interval, setCurrentInterval] = useState(null);
+  let duration = 20;
   const dispatch = useDispatch();
 
+  // useEffect(() => {
+
+  //   return () => clearInterval(interval);
+  // }, [seconds]);
+
   const addToQueue = data => {
+    let flag = false;
     try {
       //check if current privateId same as queue private Id
       if (IsJsonString(data)) {
-        console.log(data);
         let d = JSON.parse(data);
         let privateId = d.privateId;
 
-        console.log("d : ", d);
-
+        console.log("received socket data, not mapped:::: ", data);
         //check if current pusher coming in is of same party
         console.log("id ... ", privateId);
         if (isSameParty(privateId)) {
@@ -80,10 +95,15 @@ const Queue = (classes, props) => {
             console.log("currentuserS: ", currentUsers);
             currentUsers.sort((a, b) => b.points - a.points);
             setAllUsers(dispatch, currentUsers);
-          } else {
+          } else if (d.hasOwnProperty("queue")) {
             let { queue } = d;
-            console.log("inside q: ", queue);
+            console.log("socket sent q: ", queue);
+            //set new timer with given elapsed time
+            //check if current track duration is not 0
+            //if 0 , start a new timer and set new song
             queueTrack(dispatch, queue);
+
+            //current track
           }
         }
       }
@@ -184,30 +204,71 @@ const Queue = (classes, props) => {
       });
   };
 
+  function alertFunc(length) {
+    alert(length);
+  }
+  function useInterval(callback, delay) {
+    const savedCallback = useRef();
+
+    useEffect(() => {
+      savedCallback.current = callback;
+    });
+
+    useEffect(() => {
+      function tick() {
+        savedCallback.current();
+      }
+
+      let id = setInterval(tick, delay);
+      return () => clearInterval(id);
+    }, [delay]);
+  }
+
+  useInterval(() => {
+    let master = window.localStorage.getItem("master");
+    let currentUser = window.localStorage.getItem("currentUserId");
+
+    if (master === currentUser) {
+      getCurrentTrack(accessToken)
+        .then(d => d.json())
+        .then(d => {
+          //check if current track is not playing and is also not paused
+          //if progress_ms>0 , it means it is still playing
+          let { is_playing } = d;
+          let { progress_ms } = d;
+
+          if (!is_playing && progress_ms === 0) playNextTrack();
+        });
+    }
+  }, 5000);
+
   const masterPlayTrack = () => {
+    // debugger;
     //master has clicked on play track
     //send websocket to all users saying who master is
 
-    playTrack(queue[0].trackId, "", accessToken).then(res => {
-      if (res.status === 200 || res.status === 204) {
-        let master = window.localStorage.getItem("currentUserId");
-        //send to db
-        sendQueuePusher(queue, privateId, master);
-        //send to websocket
-        socket.sendMessage(
-          JSON.stringify({ privateId: privateId, master: master })
-        );
+    if (queue.length > 0) {
+      playTrack(queue[0].trackId, "", accessToken).then(res => {
+        if (res.status === 200 || res.status === 204) {
+          let master = window.localStorage.getItem("currentUserId");
+          //send to db
+          sendQueuePusher(queue, privateId, master);
+          //send to websocket
+          socket.sendMessage(
+            JSON.stringify({ privateId: privateId, master: master })
+          );
 
-        console.log("timer id exists: ", timerId);
+          console.log("timer id exists: ", timerId);
 
-        //show that you are the dj
-        if (timerId !== null) {
-          clearTimeout(timerId);
-          setTimerId(null);
-        }
-        playNextTrack();
-      } else alert("Please make sure a spotify web player is active");
-    });
+          //show that you are the dj
+          if (timerId !== null) {
+            clearTimeout(timerId);
+            setTimerId(null);
+          }
+          playNextTrack();
+        } else alert("Please make sure a spotify web player is active");
+      });
+    }
   };
 
   const playNextTrack = () => {
@@ -226,15 +287,23 @@ const Queue = (classes, props) => {
       updateCurrentTrack(dispatch, payload);
 
       //set duration for timer
-      let duration = queue[0].duration;
 
-      console.log("new duration for timer: ", duration);
-      let timerId = setTimeout(playNextTrack, duration);
-      setTimerId(timerId);
+      // setDuration(queue[0].duration);
 
-      console.log("new timer set: ", timerId);
+      // setSeconds(0);
+      // let d = 10000;
+      // if (timerId !== null) clearTimeout(timerId);
+      // let timerid = setTimeout(() => {
+      //   socket.sendMessage(
+      //     JSON.stringify({ privateId: privateId, data: "playNext" })
+      //   );
+      // }, d);
+      // setTimerId(timerId);
+
+      // console.log("new timer set: ", timerId);
 
       //play the track on top of queue
+
       playTrack(queue[0].trackId, "", accessToken).then(res => {
         if (res.status === 200 || res.status === 204) {
           if (queue[0].hasOwnProperty("playedBy")) {
@@ -249,7 +318,6 @@ const Queue = (classes, props) => {
 
           //remove the top track
           queue.splice(0, 1);
-
           //update current user points
 
           //display the current track in player
@@ -257,6 +325,8 @@ const Queue = (classes, props) => {
 
           //update current queue and to all clients
           updateQueue(queue);
+
+          //keep checking for current playing track
         }
       });
 
