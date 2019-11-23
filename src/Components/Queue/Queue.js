@@ -4,6 +4,7 @@ import { Button } from "@material-ui/core";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import Drawer from "@material-ui/core/Drawer";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { isMasterCheck } from "../../utils";
 
 import {
   playTrack,
@@ -38,35 +39,23 @@ import { access } from "fs";
 const SOCKET_URI = authHost.SOCKET;
 
 const Queue = (classes, props) => {
-  const {
-    queue,
-    accessToken,
-    privateId,
-    isMaster,
-    socket,
-    currentTrackDuration
-  } = useSelector(state => ({
-    ...state.queueTrackReducer,
-    ...state.sessionReducer,
-    ...state.privateIdReducer,
-    ...state.allUsersReducer,
-    ...state.masterReducer,
-    ...state.socketReducer,
-    ...state.currentTrackReducer
-  }));
+  const { queue, accessToken, privateId, isMaster, socket } = useSelector(
+    state => ({
+      ...state.queueTrackReducer,
+      ...state.sessionReducer,
+      ...state.privateIdReducer,
+      ...state.allUsersReducer,
+      ...state.masterReducer,
+      ...state.socketReducer,
+      ...state.currentTrackReducer
+    })
+  );
 
   const matches = useMediaQuery("(min-width:600px)");
 
-  const [seconds, setSeconds] = useState(0);
   const [timerId, setTimerId] = useState(null);
-  const [interval, setCurrentInterval] = useState(null);
-  let duration = 20;
+
   const dispatch = useDispatch();
-
-  // useEffect(() => {
-
-  //   return () => clearInterval(interval);
-  // }, [seconds]);
 
   const addToQueue = data => {
     let flag = false;
@@ -76,7 +65,8 @@ const Queue = (classes, props) => {
         let d = JSON.parse(data);
         let privateId = d.privateId;
 
-        console.log("received socket data, not mapped:::: ", data);
+        console.log("data from socket: ", data);
+
         //check if current pusher coming in is of same party
         console.log("id ... ", privateId);
         if (isSameParty(privateId)) {
@@ -84,11 +74,7 @@ const Queue = (classes, props) => {
             //update current master
             let { master } = d;
             window.localStorage.setItem("master", master);
-            if (
-              master !== "" &&
-              master !== window.localStorage.getItem("currentUserId")
-            )
-              setMaster(dispatch, false);
+            if (isMasterCheck()) setMaster(dispatch, false);
             else setMaster(dispatch, true);
           } else if (d.hasOwnProperty("currentUsers")) {
             let { currentUsers } = d;
@@ -175,7 +161,6 @@ const Queue = (classes, props) => {
       .getUserPoints()
       .then(res => res.json())
       .then(data => {
-        console.log("points data for indiv user: ", data);
         if (data.users.length > 0) {
           let { points } = data.users[0];
           if (mode === "vote" && points <= 0) {
@@ -196,7 +181,6 @@ const Queue = (classes, props) => {
                     .then(res => {
                       handleUsers(res);
                     });
-                  console.log("succesfully updated points...");
                 }
               });
           }
@@ -204,9 +188,6 @@ const Queue = (classes, props) => {
       });
   };
 
-  function alertFunc(length) {
-    alert(length);
-  }
   function useInterval(callback, delay) {
     const savedCallback = useRef();
 
@@ -225,10 +206,7 @@ const Queue = (classes, props) => {
   }
 
   useInterval(() => {
-    let master = window.localStorage.getItem("master");
-    let currentUser = window.localStorage.getItem("currentUserId");
-
-    if (master === currentUser) {
+    if (isMasterCheck() && queue.length > 0) {
       getCurrentTrack(accessToken)
         .then(d => d.json())
         .then(d => {
@@ -257,14 +235,7 @@ const Queue = (classes, props) => {
           socket.sendMessage(
             JSON.stringify({ privateId: privateId, master: master })
           );
-
-          console.log("timer id exists: ", timerId);
-
-          //show that you are the dj
-          if (timerId !== null) {
-            clearTimeout(timerId);
-            setTimerId(null);
-          }
+          //play track
           playNextTrack();
         } else alert("Please make sure a spotify web player is active");
       });
@@ -273,8 +244,6 @@ const Queue = (classes, props) => {
 
   const playNextTrack = () => {
     //make master as current user
-    console.log("entering play next track (only for the dj)...", timerId);
-
     //check if queue is not empty
     if (queue.length > 0) {
       //get device id
@@ -285,22 +254,6 @@ const Queue = (classes, props) => {
       };
       //update the current track to be top track
       updateCurrentTrack(dispatch, payload);
-
-      //set duration for timer
-
-      // setDuration(queue[0].duration);
-
-      // setSeconds(0);
-      // let d = 10000;
-      // if (timerId !== null) clearTimeout(timerId);
-      // let timerid = setTimeout(() => {
-      //   socket.sendMessage(
-      //     JSON.stringify({ privateId: privateId, data: "playNext" })
-      //   );
-      // }, d);
-      // setTimerId(timerId);
-
-      // console.log("new timer set: ", timerId);
 
       //play the track on top of queue
 
@@ -318,15 +271,12 @@ const Queue = (classes, props) => {
 
           //remove the top track
           queue.splice(0, 1);
-          //update current user points
 
           //display the current track in player
           displayCurrentTrack(dispatch, true);
 
           //update current queue and to all clients
           updateQueue(queue);
-
-          //keep checking for current playing track
         }
       });
 

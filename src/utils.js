@@ -7,7 +7,7 @@ export function IsJsonString(str) {
   return true;
 }
 
-export function isMaster() {
+export function isMasterCheck() {
   let master = window.localStorage.getItem("master");
   let user = window.localStorage.getItem("currentUserId");
 
