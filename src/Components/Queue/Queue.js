@@ -24,17 +24,12 @@ import {
 } from "../../Actions/QueueActions";
 import { setSocket } from "../../Actions/SessionActions";
 import { setAllUsers } from "../../Actions/UsersActions";
-import {
-  displayCurrentTrack,
-  setCurrentTrackDuration
-} from "../../Actions/CurrentTrackActions";
 import { updatePoints } from "../../Middleware/pointsMiddleware";
 import Socket from "../../Interface/SocketInterface";
 import authHost from "../../config/app";
 import "./Queue.css";
 
 import Player from "../../Interface/PointsInterface";
-import { access } from "fs";
 
 const SOCKET_URI = authHost.SOCKET;
 
@@ -53,44 +48,28 @@ const Queue = (classes, props) => {
 
   const matches = useMediaQuery("(min-width:600px)");
 
-  const [timerId, setTimerId] = useState(null);
-  const [seconds, setSeconds] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [triggerTimer, setTriggerTimer] = useState(false);
-  let interval = null;
-
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    let id = setInterval(() => {
-      setSeconds(seconds => seconds + 1);
-      console.log("Seconds: ", seconds);
-    }, 1000);
-    return () => clearInterval(id);
-  }, [seconds]);
-
   const addToQueue = data => {
-    let flag = false;
     try {
       //check if current privateId same as queue private Id
       if (IsJsonString(data)) {
         let d = JSON.parse(data);
         let privateId = d.privateId;
 
-        console.log("data from socket: ", data);
-
         //check if current pusher coming in is of same party
-        console.log("id ... ", privateId);
+
         if (isSameParty(privateId)) {
           if (d.hasOwnProperty("master")) {
             //update current master
             let { master } = d;
             window.localStorage.setItem("master", master);
-            if (isMasterCheck()) setMaster(dispatch, false);
+            let user = window.localStorage.getItem("currentUserId");
+            if (master !== "" && master !== user) setMaster(dispatch, false);
             else setMaster(dispatch, true);
           } else if (d.hasOwnProperty("currentUsers")) {
             let { currentUsers } = d;
-            console.log("currentuserS: ", currentUsers);
+
             currentUsers.sort((a, b) => b.points - a.points);
             setAllUsers(dispatch, currentUsers);
           } else if (d.hasOwnProperty("queue")) {
@@ -220,14 +199,18 @@ const Queue = (classes, props) => {
   useInterval(() => {
     if (isMasterCheck() && queue.length > 0) {
       getCurrentTrack(accessToken)
-        .then(d => d.json())
+        .then(d => {
+          if (d.status === 200) return d.json();
+        })
         .then(d => {
           //check if current track is not playing and is also not paused
           //if progress_ms>0 , it means it is still playing
-          let { is_playing } = d;
-          let { progress_ms } = d;
+          if (d) {
+            let { is_playing } = d;
+            let { progress_ms } = d;
 
-          if (!is_playing && progress_ms === 0) playNextTrack();
+            if (!is_playing && progress_ms === 0) playNextTrack();
+          }
         });
     }
   }, 5000);
@@ -280,7 +263,6 @@ const Queue = (classes, props) => {
             };
             pointModification(trackCallback, 2, playedBy, "playTrack");
           }
-          console.log("splicing queue ...");
 
           //remove the top track
           queue.splice(0, 1);
