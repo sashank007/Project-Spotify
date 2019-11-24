@@ -50,6 +50,9 @@
   color: black;
   font-family: monospace;
 }
+.current-session-id {
+  color: black;
+}
 .coin {
   float: right;
   height: 20px;

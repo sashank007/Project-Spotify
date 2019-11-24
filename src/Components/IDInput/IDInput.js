@@ -15,7 +15,7 @@ export default function IDInput() {
 
   return (
     <div className="idinput-container">
-      <label className="text-session">Join a Session</label>
+      <label className="text-session">Join a Party</label>
       <input className="inp" ref={idInputRef}></input>
       <Button
         variant="contained"

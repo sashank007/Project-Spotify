@@ -11,7 +11,7 @@ import "./AllUsers.css";
 export default function AllUsers() {
   const matches = useMediaQuery("(min-width:600px)");
 
-  let { playingUsers } = useSelector(state => ({
+  let { playingUsers, privateId } = useSelector(state => ({
     ...state.sessionReducer,
     ...state.privateIdReducer,
     ...state.allUsersReducer
@@ -46,10 +46,13 @@ export default function AllUsers() {
     setState({ ...state, [side]: open });
   };
 
+  let party = privateId.split("-")[1];
+
   return (
     <div>
       {matches ? (
         <div className="allusers-container">
+          <p className="current-session-id">Party ID: {party}</p>
           <p className="current-players-heading">Scoreboard</p>
           <ul className="users-list">
             <li className="img-item">
