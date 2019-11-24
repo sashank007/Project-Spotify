@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Button } from "@material-ui/core";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
@@ -30,37 +30,43 @@ import Player from "../../Interface/PointsInterface";
 const SOCKET_URI = authHost.SOCKET;
 
 const Queue = (classes, props) => {
-  const {
-    queue,
-    accessToken,
-    privateId,
-
-    isMaster,
-    socket
-  } = useSelector(state => ({
-    ...state.queueTrackReducer,
-    ...state.sessionReducer,
-    ...state.privateIdReducer,
-    ...state.allUsersReducer,
-    ...state.masterReducer,
-    ...state.socketReducer
-  }));
+  let { queue, accessToken, privateId, isMaster, socket } = useSelector(
+    state => ({
+      ...state.queueTrackReducer,
+      ...state.sessionReducer,
+      ...state.privateIdReducer,
+      ...state.allUsersReducer,
+      ...state.masterReducer,
+      ...state.socketReducer
+    })
+  );
 
   const matches = useMediaQuery("(min-width:600px)");
 
   const [timerId, setTimerId] = useState(null);
+  const [seconds, setSeconds] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [triggerTimer, setTriggerTimer] = useState(false);
+  let interval = null;
 
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    let id = setInterval(() => {
+      setSeconds(seconds => seconds + 1);
+      console.log("Seconds: ", seconds);
+    }, 1000);
+    return () => clearInterval(id);
+  }, [seconds]);
+
   const addToQueue = data => {
+    let q = null;
     try {
       //check if current privateId same as queue private Id
       if (IsJsonString(data)) {
         console.log(data);
         let d = JSON.parse(data);
         let privateId = d.privateId;
-
-        console.log("d : ", d);
 
         //check if current pusher coming in is of same party
         console.log("id ... ", privateId);
@@ -82,10 +88,30 @@ const Queue = (classes, props) => {
             setAllUsers(dispatch, currentUsers);
           } else {
             let { queue } = d;
-            console.log("inside q: ", queue);
-            queueTrack(dispatch, queue);
+
+            let secondsElapsed = seconds;
+            let timeRemaining = duration - secondsElapsed * 1000;
+
+            if (timerId !== null) {
+              clearTimeout(timerId);
+              setTimerId(null);
+            }
+
+            let timer = setTimeout(masterPlayTrack, timeRemaining);
+            setDuration(timeRemaining);
+            console.log("time remaining: ", duration);
+            console.log("new timer id set: ", timerId);
+
+            //trigger the setinterval useffect, then once updated, calcualte difference
+
+            setTimerId(timer);
+
+            q = queue;
           }
         }
+      }
+      if (q !== null) {
+        queueTrack(dispatch, q);
       }
     } catch (e) {
       throw e;
@@ -188,31 +214,59 @@ const Queue = (classes, props) => {
     //master has clicked on play track
     //send websocket to all users saying who master is
 
-    playTrack(queue[0].trackId, "", accessToken).then(res => {
-      if (res.status === 200 || res.status === 204) {
-        let master = window.localStorage.getItem("currentUserId");
-        //send to db
-        sendQueuePusher(queue, privateId, master);
-        //send to websocket
-        socket.sendMessage(
-          JSON.stringify({ privateId: privateId, master: master })
-        );
+    setSeconds(0);
 
-        console.log("timer id exists: ", timerId);
+    if (queue.length > 0) {
+      playTrack(queue[0].trackId, "", accessToken).then(res => {
+        if (res.status === 200 || res.status === 204) {
+          let master = window.localStorage.getItem("currentUserId");
+          //send to db
+          sendQueuePusher(queue, privateId, master);
+          //send to websocket
+          socket.sendMessage(
+            JSON.stringify({ privateId: privateId, master: master })
+          );
 
-        //show that you are the dj
-        if (timerId !== null) {
-          clearTimeout(timerId);
-          setTimerId(null);
-        }
-        playNextTrack();
-      } else alert("Please make sure a spotify web player is active");
-    });
+          console.log("timer id exists: ", timerId);
+
+          //show that you are the dj
+          if (timerId !== null) {
+            clearTimeout(timerId);
+            setTimerId(null);
+          }
+          playNextTrack();
+        } else alert("Please make sure a spotify web player is active");
+      });
+    }
   };
+
+  function useInterval(callback, delay) {
+    const savedCallback = useRef();
+
+    // Remember the latest callback.
+    useEffect(() => {
+      savedCallback.current = callback;
+    }, [callback]);
+
+    // Set up the interval.
+    useEffect(() => {
+      function tick() {
+        savedCallback.current();
+      }
+      if (delay !== null) {
+        let id = setInterval(tick, delay);
+        return () => clearInterval(id);
+      }
+    }, [delay]);
+  }
 
   const playNextTrack = () => {
     //make master as current user
-    console.log("entering play next track (only for the dj)...", timerId);
+    console.log(
+      "entering play next track (only for the dj)...",
+      timerId,
+      queue
+    );
 
     //check if queue is not empty
     if (queue.length > 0) {
@@ -226,10 +280,16 @@ const Queue = (classes, props) => {
       updateCurrentTrack(dispatch, payload);
 
       //set duration for timer
-      let duration = queue[0].duration;
+      // let duration = queue[0].duration;
+      // setSeconds(10000);
+      let d = 10000;
+      setDuration(d);
 
-      console.log("new duration for timer: ", duration);
-      let timerId = setTimeout(playNextTrack, duration);
+      console.log("new duration for timer: ", d);
+      let timerId = setTimeout(masterPlayTrack, d);
+
+      //trigger the setinterval useffect, then once updated, calcualte difference
+
       setTimerId(timerId);
 
       console.log("new timer set: ", timerId);
@@ -246,6 +306,7 @@ const Queue = (classes, props) => {
             };
             pointModification(trackCallback, 2, playedBy, "playTrack");
           }
+          console.log("splicing queue ...");
 
           //remove the top track
           queue.splice(0, 1);

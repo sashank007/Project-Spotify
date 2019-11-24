@@ -17,6 +17,9 @@ function App() {
 
   useEffect(() => {
     onLoad();
+    if (process.env.NETLIFY === "true") {
+      console.log("NETLIFY TRUE");
+    }
   }, []);
 
   const onLoad = () => {
