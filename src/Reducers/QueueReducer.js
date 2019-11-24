@@ -52,7 +52,8 @@ export const currentTrackReducer = (
   state = {
     trackName: "",
     trackImage: "",
-    trackDuration: 0
+    trackDuration: 0,
+    currentTrackDuration: 10000
   },
   { type, payload }
 ) => {
@@ -61,6 +62,11 @@ export const currentTrackReducer = (
       let { trackName, trackImage, trackDuration } = payload;
       return { ...state, trackName, trackDuration, trackImage };
     }
+
+    case ACTION_TYPES.SET_TRACK_DURATION: {
+      return { ...state, currentTrackDuration: payload };
+    }
+
     default: {
     }
   }

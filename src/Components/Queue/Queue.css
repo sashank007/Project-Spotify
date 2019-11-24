@@ -8,21 +8,33 @@
   background-color: white;
   color: black;
   height: 100vh;
+  overflow-y: scroll;
 }
-ul {
+.queue-items {
+  font-size: 16px;
   list-style-type: none;
   text-align: left;
-  font-family: "Quicksand", sans-serif;
+  /* font-family: "Quicksand", sans-serif; */
+  font-family: "Alata", sans-serif;
 }
 
 .score {
   color: gray;
 }
-p {
-  font-size: 32px;
+.queue-header {
+  font-size: 3.2vw;
   color: #0000008a;
   font-family: "Luckiest Guy", cursive;
 }
 
 @media only screen and (max-width: 600px) {
+  .queue-items {
+    font-size: 12px;
+  }
+}
+
+@media only screen and (max-width: 800px) {
+  .queue-items {
+    font-size: 12px;
+  }
 }

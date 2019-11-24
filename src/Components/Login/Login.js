@@ -6,23 +6,28 @@ import queryString from "query-string";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import { setAllUsers } from "../../Actions/UsersActions";
-import { setSessionToken } from "../../Actions/SessionActions";
+import { setSessionToken, setSocket } from "../../Actions/SessionActions";
 import { queueTrack, setMaster } from "../../Actions/QueueActions";
 
 import { addNewUser, getAllUsers } from "../../Middleware/userMiddleware";
 import { getQueue } from "../../Middleware/queueMiddleware";
 
+import Socket from "../../Interface/SocketInterface";
 import "./Login.css";
 import authHost from "../../config/app";
-import { isMaster } from "../../utils";
+import { isMasterCheck, IsJsonString } from "../../utils";
 
 const BACKEND_URI = authHost.HOST;
+
+const SOCKET_URI = authHost.SOCKET;
+
+let sock = null;
 
 export default function Login() {
   const spotifyLogin = () => {
     window.location = BACKEND_URI + "/login";
   };
-  let { accessToken } = useSelector(state => ({
+  let { accessToken, socket, privateId, playingUsers } = useSelector(state => ({
     ...state.sessionReducer,
     ...state.privateIdReducer,
     ...state.socketReducer
@@ -50,24 +55,27 @@ export default function Login() {
     let currentUsers = [];
     let userIds = [];
     let points = [];
-
-    users.map((i, key) => {
-      userIds.push(users[key].userId);
-      points.push(users[key].points);
-      currentUsers.push({
-        userName: users[key].userName,
-        userId: users[key].userId,
-        points: users[key].points
+    if (users) {
+      users.map((i, key) => {
+        userIds.push(users[key].userId);
+        points.push(users[key].points);
+        currentUsers.push({
+          userName: users[key].userName,
+          userId: users[key].userId,
+          points: users[key].points
+        });
+        return null;
       });
-      return null;
-    });
+    }
 
     if (userIds.indexOf(uid) < 0) {
       addTheNewUser(name, uid);
       currentUsers.push({ userName: name, points: 10 });
     }
-
+    console.log("logged in new user: ", currentUsers);
     setAllUsers(dispatch, currentUsers);
+
+    // sock.sendMessage({ privateId: privateId, currentUsers: currentUsers });
   };
 
   const checkLocalStorage = () => {
@@ -96,6 +104,32 @@ export default function Login() {
       window.history.pushState({}, document.title, "/");
     }
   };
+  const createSocketConn = () => {
+    let s = new Socket(SOCKET_URI);
+    // setSocket(dispatch, s);
+
+    s.createConnection();
+    console.log("created socket conn in login...");
+
+    s.onMessageReceived(addToQueue);
+
+    //listen to new messages
+    setSocket(dispatch, s);
+    sock = s;
+  };
+
+  const addToQueue = data => {
+    try {
+      if (IsJsonString(data)) {
+        let d = JSON.parse(data);
+        let privateId = d.privateId;
+
+        console.log("data from socket login: ", data);
+      }
+    } catch (e) {
+      throw e;
+    }
+  };
 
   const hasLoggedIn = (userName, userId) => {
     let id = window.localStorage.getItem("privateId");
@@ -116,15 +150,17 @@ export default function Login() {
           //fetch current master, add to localstorage
           let { master } = data.queues[0];
           window.localStorage.setItem("master", master);
-          if (isMaster()) setMaster(dispatch, true);
+          if (isMasterCheck()) setMaster(dispatch, true);
           else setMaster(dispatch, false);
 
+          //queue existing track
           queueTrack(dispatch, queue);
         }
       });
   };
 
   useEffect(() => {
+    // createSocketConn();
     checkLocalStorage();
     checkUrl();
   }, []);

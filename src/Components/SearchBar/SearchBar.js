@@ -20,7 +20,7 @@ export default function SearchBar(props) {
           padding: "2px 4px",
           display: "flex",
           alignItems: "center",
-          width: 800,
+          width: "60vw",
           overflowX: "none",
           marginLeft: "15vw",
           marginTop: "15px"
@@ -44,7 +44,7 @@ export default function SearchBar(props) {
           padding: "2px 4px",
           display: "flex",
           alignItems: "center",
-          width: 240,
+          width: "60vw",
           overflowX: "none",
           marginLeft: "15vw",
           marginTop: "15px"

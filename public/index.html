@@ -11,7 +11,7 @@
     />
     <link rel="apple-touch-icon" href="logo192.png" />
     <link
-      href="https://fonts.googleapis.com/css?family=Alegreya|Dosis|Luckiest+Guy|PT+Sans+Narrow|Rajdhani|Source+Sans+Pro|Ultra&display=swap"
+      href="https://fonts.googleapis.com/css?family=Alegreya|Dosis|Luckiest+Guy|PT+Sans+Narrow|Rajdhani|Source+Sans+Pro|Ultra|Alata&display=swap"
       rel="stylesheet"
     />
 
@@ -22,9 +22,11 @@
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
 
     <script src="https://js.pusher.com/5.0/pusher.min.js"></script>
-
+    <script src="https://sdk.scdn.co/spotify-player.js"></script>
     <script>
-      Pusher.logToConsole = true;
+      window.onSpotifyWebPlaybackSDKReady = () => {
+        // You can now initialize Spotify.Player and use the SDK
+      };
     </script>
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.

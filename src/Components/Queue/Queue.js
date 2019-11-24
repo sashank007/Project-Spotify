@@ -4,8 +4,12 @@ import { Button } from "@material-ui/core";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import Drawer from "@material-ui/core/Drawer";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { isMasterCheck } from "../../utils";
 
-import { playTrack } from "../../Middleware/playbackMiddleware";
+import {
+  playTrack,
+  getCurrentTrack
+} from "../../Middleware/playbackMiddleware";
 import { sendQueuePusher } from "../../Middleware/queueMiddleware";
 import { getAllUsers } from "../../Middleware/userMiddleware";
 
@@ -20,24 +24,30 @@ import {
 } from "../../Actions/QueueActions";
 import { setSocket } from "../../Actions/SessionActions";
 import { setAllUsers } from "../../Actions/UsersActions";
-import { displayCurrentTrack } from "../../Actions/CurrentTrackActions";
+import {
+  displayCurrentTrack,
+  setCurrentTrackDuration
+} from "../../Actions/CurrentTrackActions";
 import { updatePoints } from "../../Middleware/pointsMiddleware";
 import Socket from "../../Interface/SocketInterface";
 import authHost from "../../config/app";
 import "./Queue.css";
 
 import Player from "../../Interface/PointsInterface";
+import { access } from "fs";
+
 const SOCKET_URI = authHost.SOCKET;
 
 const Queue = (classes, props) => {
-  let { queue, accessToken, privateId, isMaster, socket } = useSelector(
+  const { queue, accessToken, privateId, isMaster, socket } = useSelector(
     state => ({
       ...state.queueTrackReducer,
       ...state.sessionReducer,
       ...state.privateIdReducer,
       ...state.allUsersReducer,
       ...state.masterReducer,
-      ...state.socketReducer
+      ...state.socketReducer,
+      ...state.currentTrackReducer
     })
   );
 
@@ -60,13 +70,14 @@ const Queue = (classes, props) => {
   }, [seconds]);
 
   const addToQueue = data => {
-    let q = null;
+    let flag = false;
     try {
       //check if current privateId same as queue private Id
       if (IsJsonString(data)) {
-        console.log(data);
         let d = JSON.parse(data);
         let privateId = d.privateId;
+
+        console.log("data from socket: ", data);
 
         //check if current pusher coming in is of same party
         console.log("id ... ", privateId);
@@ -75,43 +86,24 @@ const Queue = (classes, props) => {
             //update current master
             let { master } = d;
             window.localStorage.setItem("master", master);
-            if (
-              master !== "" &&
-              master !== window.localStorage.getItem("currentUserId")
-            )
-              setMaster(dispatch, false);
+            if (isMasterCheck()) setMaster(dispatch, false);
             else setMaster(dispatch, true);
           } else if (d.hasOwnProperty("currentUsers")) {
             let { currentUsers } = d;
             console.log("currentuserS: ", currentUsers);
             currentUsers.sort((a, b) => b.points - a.points);
             setAllUsers(dispatch, currentUsers);
-          } else {
+          } else if (d.hasOwnProperty("queue")) {
             let { queue } = d;
+            console.log("socket sent q: ", queue);
+            //set new timer with given elapsed time
+            //check if current track duration is not 0
+            //if 0 , start a new timer and set new song
+            queueTrack(dispatch, queue);
 
-            let secondsElapsed = seconds;
-            let timeRemaining = duration - secondsElapsed * 1000;
-
-            if (timerId !== null) {
-              clearTimeout(timerId);
-              setTimerId(null);
-            }
-
-            let timer = setTimeout(masterPlayTrack, timeRemaining);
-            setDuration(timeRemaining);
-            console.log("time remaining: ", duration);
-            console.log("new timer id set: ", timerId);
-
-            //trigger the setinterval useffect, then once updated, calcualte difference
-
-            setTimerId(timer);
-
-            q = queue;
+            //current track
           }
         }
-      }
-      if (q !== null) {
-        queueTrack(dispatch, q);
       }
     } catch (e) {
       throw e;
@@ -181,13 +173,12 @@ const Queue = (classes, props) => {
       .getUserPoints()
       .then(res => res.json())
       .then(data => {
-        console.log("points data for indiv user: ", data);
         if (data.users.length > 0) {
           let { points } = data.users[0];
           if (mode === "vote" && points <= 0) {
             //do not increase queue
             //send alert saying you don't have enough points
-            alert("You do not have enough points");
+            alert("YoQu do not have enough points");
           } else {
             points = points + addPoints;
             callback(points);
@@ -202,7 +193,6 @@ const Queue = (classes, props) => {
                     .then(res => {
                       handleUsers(res);
                     });
-                  console.log("succesfully updated points...");
                 }
               });
           }
@@ -210,11 +200,42 @@ const Queue = (classes, props) => {
       });
   };
 
+  function useInterval(callback, delay) {
+    const savedCallback = useRef();
+
+    useEffect(() => {
+      savedCallback.current = callback;
+    });
+
+    useEffect(() => {
+      function tick() {
+        savedCallback.current();
+      }
+
+      let id = setInterval(tick, delay);
+      return () => clearInterval(id);
+    }, [delay]);
+  }
+
+  useInterval(() => {
+    if (isMasterCheck() && queue.length > 0) {
+      getCurrentTrack(accessToken)
+        .then(d => d.json())
+        .then(d => {
+          //check if current track is not playing and is also not paused
+          //if progress_ms>0 , it means it is still playing
+          let { is_playing } = d;
+          let { progress_ms } = d;
+
+          if (!is_playing && progress_ms === 0) playNextTrack();
+        });
+    }
+  }, 5000);
+
   const masterPlayTrack = () => {
+    // debugger;
     //master has clicked on play track
     //send websocket to all users saying who master is
-
-    setSeconds(0);
 
     if (queue.length > 0) {
       playTrack(queue[0].trackId, "", accessToken).then(res => {
@@ -226,48 +247,15 @@ const Queue = (classes, props) => {
           socket.sendMessage(
             JSON.stringify({ privateId: privateId, master: master })
           );
-
-          console.log("timer id exists: ", timerId);
-
-          //show that you are the dj
-          if (timerId !== null) {
-            clearTimeout(timerId);
-            setTimerId(null);
-          }
+          //play track
           playNextTrack();
         } else alert("Please make sure a spotify web player is active");
       });
     }
   };
 
-  function useInterval(callback, delay) {
-    const savedCallback = useRef();
-
-    // Remember the latest callback.
-    useEffect(() => {
-      savedCallback.current = callback;
-    }, [callback]);
-
-    // Set up the interval.
-    useEffect(() => {
-      function tick() {
-        savedCallback.current();
-      }
-      if (delay !== null) {
-        let id = setInterval(tick, delay);
-        return () => clearInterval(id);
-      }
-    }, [delay]);
-  }
-
   const playNextTrack = () => {
     //make master as current user
-    console.log(
-      "entering play next track (only for the dj)...",
-      timerId,
-      queue
-    );
-
     //check if queue is not empty
     if (queue.length > 0) {
       //get device id
@@ -279,22 +267,8 @@ const Queue = (classes, props) => {
       //update the current track to be top track
       updateCurrentTrack(dispatch, payload);
 
-      //set duration for timer
-      // let duration = queue[0].duration;
-      // setSeconds(10000);
-      let d = 10000;
-      setDuration(d);
-
-      console.log("new duration for timer: ", d);
-      let timerId = setTimeout(masterPlayTrack, d);
-
-      //trigger the setinterval useffect, then once updated, calcualte difference
-
-      setTimerId(timerId);
-
-      console.log("new timer set: ", timerId);
-
       //play the track on top of queue
+
       playTrack(queue[0].trackId, "", accessToken).then(res => {
         if (res.status === 200 || res.status === 204) {
           if (queue[0].hasOwnProperty("playedBy")) {
@@ -311,10 +285,8 @@ const Queue = (classes, props) => {
           //remove the top track
           queue.splice(0, 1);
 
-          //update current user points
-
           //display the current track in player
-          displayCurrentTrack(dispatch, true);
+          // displayCurrentTrack(dispatch, true);
 
           //update current queue and to all clients
           updateQueue(queue);
@@ -429,8 +401,10 @@ const Queue = (classes, props) => {
     <div>
       {matches ? (
         <div className="Queue-Container">
-          <p style={{ marginTop: "8vh" }}>YOUR QUEUE</p>
-          <ul>
+          <p className="queue-header" style={{ marginTop: "8vh" }}>
+            YOUR QUEUE
+          </p>
+          <ul className="queue-items">
             <QueueItems />
           </ul>
           <Button
@@ -439,7 +413,8 @@ const Queue = (classes, props) => {
             className={classes.button}
             style={{
               backgroundColor: "#fff",
-              fontFamily: "'Luckiest Guy', cursive"
+              fontFamily: "'Luckiest Guy', cursive",
+              marginBottom: "20px"
             }}
             onClick={masterPlayTrack}
             startIcon={<PlayArrowIcon />}
@@ -457,6 +432,7 @@ const Queue = (classes, props) => {
               right: 0,
               marginRight: "12px",
               top: "8vh",
+              marginBottom: "20px",
               color: "white"
             }}
             onClick={toggleDrawer("right", true)}
@@ -471,8 +447,13 @@ const Queue = (classes, props) => {
             onClose={toggleDrawer("right", false)}
           >
             <div style={{ width: 250 }}>
-              <p style={{ marginLeft: 20, marginTop: "10vh" }}>YOUR QUEUE</p>
-              <ul>
+              <p
+                className="queue-header"
+                style={{ marginLeft: 20, marginTop: "10vh" }}
+              >
+                YOUR QUEUE
+              </p>
+              <ul className="queue-items">
                 <QueueItems />
               </ul>
             </div>
