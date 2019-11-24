@@ -5,30 +5,57 @@ import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
 import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    width: " 50vw",
-    position: "absolute",
-    left: " 20%",
-    right: "0",
-    bottom: "6vh",
-    zIndex: "10"
-  },
-  heading: {
-    fontSize: theme.typography.pxToRem(15),
-    fontWeight: theme.typography.fontWeightRegular,
-    fontFamily: "Luckiest Guy"
-  },
-  data: {
-    float: "left",
-    fontFamily: "'Roboto Mono', monospace",
-    fontSize: "12px",
-    padding: "5px"
-  }
-}));
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 export default function IntroCollapsible() {
+  const matches = useMediaQuery("(min-width:600px)");
+
+  const useStyles = makeStyles(theme =>
+    matches
+      ? {
+          root: {
+            width: " 50vw",
+            position: "absolute",
+            left: " 20%",
+            right: "0",
+            bottom: "6vh",
+            zIndex: "10"
+          },
+          heading: {
+            fontSize: theme.typography.pxToRem(15),
+            fontWeight: theme.typography.fontWeightRegular,
+            fontFamily: "Luckiest Guy"
+          },
+          data: {
+            float: "left",
+            fontFamily: "'Roboto Mono', monospace",
+            fontSize: "1.5vh",
+            padding: "5px"
+          }
+        }
+      : {
+          root: {
+            width: " 50vw",
+            position: "absolute",
+            left: " 20%",
+            right: "0",
+            bottom: "7vh",
+            zIndex: "10"
+          },
+          heading: {
+            fontSize: theme.typography.pxToRem(15),
+            fontWeight: theme.typography.fontWeightRegular,
+            fontFamily: "Luckiest Guy"
+          },
+          data: {
+            float: "left",
+            fontFamily: "'Roboto Mono', monospace",
+            fontSize: "1.5vh",
+            padding: "5px"
+          }
+        }
+  );
+
   const classes = useStyles();
 
   return (
