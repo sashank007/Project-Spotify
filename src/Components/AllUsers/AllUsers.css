@@ -45,7 +45,7 @@
 .img-item {
   width: 100px;
 
-  margin-left: 0.5vw;
+  margin-left: 2vw;
 
   color: black;
   font-family: monospace;
@@ -55,7 +55,18 @@
   height: 20px;
   width: 20px;
   padding: 8px;
-  margin-right: 23 px;
+  /* margin-right: 23px; */
+
+  /* margin-left: 20px; */
+  margin-left: 15px;
+}
+
+.musician {
+  float: right;
+  height: 20px;
+  width: 20px;
+  padding: 8px;
+  margin-left: 5px;
 }
 
 .scoreboard-button {

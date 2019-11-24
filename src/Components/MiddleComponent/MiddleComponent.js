@@ -5,6 +5,7 @@ import CurrentTrack from "../CurrentTrack/CurrentTrack";
 import Queue from "../Queue/Queue";
 import AllUsers from "../AllUsers/AllUsers";
 import IDInput from "../IDInput/IDInput";
+import ButtonAppBar from "../ButtonAppBar/ButtonAppBar";
 
 export default function MiddleComponent() {
   return (

@@ -55,7 +55,7 @@ export default function AllUsers() {
             <li className="img-item">
               <span>
                 <img className="coin" src={Coin} alt="points"></img>
-                <img className="coin" src={Musician} alt="musician"></img>
+                <img className="musician" src={Musician} alt="musician"></img>
               </span>
             </li>
             <GetAllUsers />
@@ -89,7 +89,7 @@ export default function AllUsers() {
               <li className="img-item">
                 <span>
                   <img className="coin" src={Coin} alt="points"></img>
-                  <img className="coin" src={Musician} alt="musician"></img>
+                  <img className="musician" src={Musician} alt="musician"></img>
                 </span>
               </li>
               <GetAllUsers />
