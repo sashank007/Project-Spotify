@@ -73,7 +73,7 @@ export default function AllUsers() {
               position: "absolute",
               left: 0,
               marginLeft: "8px",
-              top: "7.5vh",
+
               color: "#fffffffa"
             }}
             aria-label="delete"

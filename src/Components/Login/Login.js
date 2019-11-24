@@ -21,8 +21,6 @@ const BACKEND_URI = authHost.HOST;
 
 const SOCKET_URI = authHost.SOCKET;
 
-let sock = null;
-
 export default function Login() {
   const spotifyLogin = () => {
     window.location = BACKEND_URI + "/login";
@@ -115,7 +113,7 @@ export default function Login() {
 
     //listen to new messages
     setSocket(dispatch, s);
-    sock = s;
+    // sock = s;
   };
 
   const addToQueue = data => {

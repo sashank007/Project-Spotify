@@ -413,7 +413,7 @@ const Queue = (classes, props) => {
               position: "absolute",
               right: 0,
               marginRight: "12px",
-              top: "8vh",
+              top: "13vh",
               marginBottom: "20px",
               color: "white"
             }}

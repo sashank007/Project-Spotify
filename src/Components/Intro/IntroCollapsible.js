@@ -14,11 +14,11 @@ export default function IntroCollapsible() {
     matches
       ? {
           root: {
-            width: " 50vw",
+            width: "50vw",
             position: "absolute",
             left: " 20%",
             right: "0",
-            bottom: "6vh",
+            bottom: "12vh",
             zIndex: "10"
           },
           heading: {
@@ -35,7 +35,7 @@ export default function IntroCollapsible() {
         }
       : {
           root: {
-            width: "55vw",
+            width: "65vw",
             position: "absolute",
             left: " 20%",
             right: "0",
@@ -83,9 +83,9 @@ export default function IntroCollapsible() {
               Upvote or Downvote your favorite songs. Each vote deducts 1 point.
             </li>
             <li className={classes.data}>
-              If any song you added gets played, you get 2 points. Player with
-              the most points wins!!
+              If any song you added gets played, you get 2 points.
             </li>
+            <li className={classes.data}>Player with the most points wins.</li>
           </ol>
         </ExpansionPanelDetails>
       </ExpansionPanel>
