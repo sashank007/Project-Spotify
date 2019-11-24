@@ -35,22 +35,22 @@ export default function IntroCollapsible() {
         }
       : {
           root: {
-            width: " 50vw",
+            width: "55vw",
             position: "absolute",
             left: " 20%",
             right: "0",
-            bottom: "7vh",
+            bottom: "12vh",
             zIndex: "10"
           },
           heading: {
-            fontSize: theme.typography.pxToRem(15),
+            fontSize: "2vh",
             fontWeight: theme.typography.fontWeightRegular,
             fontFamily: "Luckiest Guy"
           },
           data: {
             float: "left",
             fontFamily: "'Roboto Mono', monospace",
-            fontSize: "1.5vh",
+            fontSize: "2.5vw",
             padding: "5px"
           }
         }
