@@ -17,6 +17,7 @@ function App() {
 
   useEffect(() => {
     onLoad();
+    console.log("process env: ", process.env);
     if (process.env.NETLIFY === "true") {
       console.log("NETLIFY TRUE");
     }
