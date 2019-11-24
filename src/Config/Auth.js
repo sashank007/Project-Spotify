@@ -1,6 +1,5 @@
-// export const OAUTH_TOKEN =
-//   "BQAHBH2nsw29wOgNQ-UQGrY6LjTndcvt55WR8Ab-ezhHVhE6FhUi0pYoGPPxttLsFifb4Xp3fwQoe-SkZ6HvAwAzMCZZNeMO_2o3XCMsDAJ-k3HDXR4oTHMqtd6LQrUXisHWbM1RkKX4oCIngx0AjSbKOLk00__iHDAz2yyI68qVQy5rVcNpRIbBiRh20X3CMz87ce-lzmxWhgVUlmY39kuVg0IyETZ66zr7iZnofE92sjh4VLXm4HpnaFi_tc--APfD_nFDL-upiA4UmVMO";
+require("dotenv").config();
 module.exports = {
-  CLIENT_ID: "c989477081bc4d85aa9f463bdcfe0f4a",
-  CLIENT_SECRET: "cd7eda81d22f4829992052cebf009baf"
+  CLIENT_ID: process.env.REACT_APP_CLIENT_ID_SPOTIFY,
+  CLIENT_SECRET: process.env.REACT_APP_CLIENT_SECRET_SPOTIFY
 };

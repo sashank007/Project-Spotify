@@ -4,7 +4,7 @@ import { Provider } from "react-redux";
 import store from "./store";
 import "./App.css";
 import MiddleComponent from "./Components/MiddleComponent/MiddleComponent";
-
+require("dotenv").config();
 function App() {
   function getUniqueId() {
     return (
